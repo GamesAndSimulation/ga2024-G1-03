@@ -109,7 +109,6 @@ public class PlayerMovement : MonoBehaviour
             rollTimer = rollDuration;
             rollDirection = gameObject.transform.forward; 
             storedSpeed = controller.velocity.magnitude;  
-            Debug.Log(storedSpeed);
         }
     }
 
