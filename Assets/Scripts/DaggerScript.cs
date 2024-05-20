@@ -5,12 +5,13 @@ using UnityEngine;
 public class DaggerScript : MonoBehaviour
 {
     public int damage = 10; 
-    public Animator animator;
+    private Animator animator;
     private AnimatorStateInfo stateInfo;
 
     void Start()
     {
-     
+     var playerController = FindObjectOfType<PlayerMovement>();
+     animator = playerController.animator;
     }
 
     void Update()

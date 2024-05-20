@@ -6,14 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
     private float verticalVelocity;
-    private float groundedTimer;     //to allow jumping when going down ramps
+    private float groundedTimer;     //to allow rolling when going down ramps
     public float walkSpeed = 2.0f;
     public float runSpeed = 3.0f;
     public float jumpHeight = 1.0f;
     public float gravityValue = 9.81f;
     private float rollSpeedMultiplier = 2f; 
     private float rollDuration = 1f;        
-    private Animator animator;
+    public Animator animator;
     public bool isRolling = false;
     private float rollTimer = 0f;
     private Vector3 rollDirection;
@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
         bool groundedPlayer = controller.isGrounded;
         if (groundedPlayer)
         {
-            //cooldown interval to allow reliable jumping even when coming down ramps
+            //cooldown interval to allow reliable rolling even when coming down ramps
             groundedTimer = 0.2f;
         }
         if (groundedTimer > 0)
@@ -80,29 +80,13 @@ public class PlayerMovement : MonoBehaviour
             move = rollSpeedMultiplier * storedSpeed * rollDirection;
         }
 
-        Jump();
-
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
     }
 
-    void Jump()
-    {
-        if (Input.GetButton("Jump") && !isRolling)
-        {
-            //must have been grounded recently to allow jump
-            if (groundedTimer > 0)
-            {
-                groundedTimer = 0;
-                verticalVelocity += Mathf.Sqrt(jumpHeight * 2 * gravityValue);
-                animator.SetTrigger("Jump");
-            }
-        }
-    }
-
     void ClickRoll()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !isRolling && groundedTimer > 0)
+        if (Input.GetButton("Jump") && !isRolling && groundedTimer > 0)
         {
             animator.SetTrigger("Roll");
             isRolling = true;
