@@ -22,7 +22,7 @@ public class TriggerMove: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             for (int i = 0; i < move.Length; i++)
             {
@@ -33,8 +33,8 @@ public class TriggerMove: MonoBehaviour
                     current.transform.position = newPosition[i];
                 }
             }
+            Destroy(this);
         }
-        Destroy(this);
     }
 
  }

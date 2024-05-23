@@ -22,7 +22,7 @@ public class TriggerTransform: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             for (int i = 0; i < delete.Length; i++)
             {
@@ -34,8 +34,9 @@ public class TriggerTransform: MonoBehaviour
                 }
                 Destroy(current);
             }
+            Destroy(this);
         }
-        Destroy(this);
+        
     }
 
  }

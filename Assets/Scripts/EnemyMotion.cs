@@ -5,23 +5,30 @@ using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-public class EnemyMotion : MonoBehaviour
+public class EnemyMotion : EnemyScript
 {
     public float speed;
     private Vector3 direction;
     private GameObject player;
+    public Animator animator;
 
     void Start()
     {
         speed = speed / 10;
-        InvokeRepeating("ChangeDirection", 0, 0.1f);
         player = GameObject.FindGameObjectWithTag("Player");
-        //
+        animator = gameObject.GetComponent<Animator>();
+        Action();
+    }
+
+    public override void Action()
+    {
+        InvokeRepeating("ChangeDirection", 0, 0.1f);
     }
 
     void ChangeDirection()
     {
         direction = new Vector3((player.transform.position.x - transform.position.x) * speed * Time.deltaTime, 0, (player.transform.position.z - transform.position.z) * speed * Time.deltaTime);
+        //animator.SetFloat("Speed", speed);
     }
 
     // Update is called once per frame
