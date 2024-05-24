@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     private float rollTimer = 0f;
     private Vector3 rollDirection;
     private float storedSpeed;
+    public Animator animator2;
+    public CharacterController controller2;
 
     void Start()
     {
@@ -67,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
                 move *= walkSpeed;
             }
             animator.SetFloat("Speed", move.magnitude);
+            animator2.SetFloat("Speed", move.magnitude);
 
             //only align to motion if we are providing enough input
             if (move.magnitude > 0.3f)
@@ -82,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
 
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+        controller2.Move(move * Time.deltaTime);
     }
 
     void ClickRoll()
@@ -89,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton("Jump") && !isRolling && groundedTimer > 0)
         {
             animator.SetTrigger("Roll");
+            animator2.SetTrigger("Roll");
             isRolling = true;
             rollTimer = rollDuration;
             rollDirection = gameObject.transform.forward; 

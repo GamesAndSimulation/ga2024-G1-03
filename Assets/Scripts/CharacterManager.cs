@@ -37,6 +37,8 @@ public class CharacterManager : MonoBehaviour
         unlockedCharacters = new List<Characters>
         {
             Characters.Knight,
+            //Characters.Mage,
+            //Characters.Dwarf
         };
         current = Characters.Knight;
     }
