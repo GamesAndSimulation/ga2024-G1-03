@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
     private float verticalVelocity;
-    private float groundedTimer;     //to allow rolling when going down ramps
+    //private float groundedTimer;     //to allow rolling when going down ramps
     public float walkSpeed = 2.0f;
     public float runSpeed = 3.0f;
     public float jumpHeight = 1.0f;
@@ -20,17 +20,20 @@ public class PlayerMovement : MonoBehaviour
     private float storedSpeed;
     public Animator animator2;
     public CharacterController controller2;
+    [SerializeField] private GameObject dwarf;
+    private PlayerCombat playerCombat;
+    public float rollCost = 20f;
 
     void Start()
     {
         controller = gameObject.GetComponentInParent<CharacterController>();
-        animator = gameObject.GetComponent<Animator>();
+        playerCombat = GetComponent<PlayerCombat>();
     }
 
     void Update()
     {
         bool groundedPlayer = controller.isGrounded;
-        if (groundedPlayer)
+        /*if (groundedPlayer)
         {
             //cooldown interval to allow reliable rolling even when coming down ramps
             groundedTimer = 0.2f;
@@ -38,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         if (groundedTimer > 0)
         {
             groundedTimer -= Time.deltaTime;
-        }
+        }*/
 
         //slam into the ground
         if (groundedPlayer && verticalVelocity < 0)
@@ -62,11 +65,15 @@ public class PlayerMovement : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                move *= runSpeed;
+                float speed;
+                speed = dwarf.activeInHierarchy ? runSpeed - 0.5f : runSpeed;
+                move *= speed;
             }
             else
             {
-                move *= walkSpeed;
+                float speed;
+                speed = dwarf.activeInHierarchy ? walkSpeed - 0.5f : walkSpeed;
+                move *= speed;
             }
             animator.SetFloat("Speed", move.magnitude);
             animator2.SetFloat("Speed", move.magnitude);
@@ -84,26 +91,36 @@ public class PlayerMovement : MonoBehaviour
         }
 
         move.y = verticalVelocity;
-        controller.Move(move * Time.deltaTime);
-        controller2.Move(move * Time.deltaTime);
+        
+        if (dwarf.activeInHierarchy)
+        {
+            controller2.Move(move * Time.deltaTime);
+            controller.gameObject.transform.position = controller2.transform.position;
+        } else {
+            controller.Move(move * Time.deltaTime);
+            controller2.gameObject.transform.position = controller.transform.position;
+        }
     }
 
     void ClickRoll()
     {
-        if (Input.GetButton("Jump") && !isRolling && groundedTimer > 0)
+        if (Input.GetButton("Jump") && !isRolling)
         {
+            if (playerCombat.NoStaminaAlert(rollCost)) return;
+            playerCombat.stamina -= rollCost;
             animator.SetTrigger("Roll");
             animator2.SetTrigger("Roll");
             isRolling = true;
             rollTimer = rollDuration;
             rollDirection = gameObject.transform.forward; 
-            storedSpeed = controller.velocity.magnitude;  
+            storedSpeed = dwarf.activeInHierarchy ? controller2.velocity.magnitude : controller.velocity.magnitude;
         }
     }
 
     void Roll()
     {
         rollTimer -= Time.deltaTime;
+        rollSpeedMultiplier = 1f;
         if (rollTimer <= 0)
         {
             isRolling = false;
@@ -119,11 +136,11 @@ public class PlayerMovement : MonoBehaviour
         }
         if (rollTimer <= 0.5f)
         {
-            rollSpeedMultiplier = 1.5f;
+            rollSpeedMultiplier = dwarf.activeInHierarchy ? 1f : 1.5f;
         }
         else if (rollTimer <= 0.8f && rollTimer >= 0.5f)
         {
-            rollSpeedMultiplier = 2.5f;
+            rollSpeedMultiplier = dwarf.activeInHierarchy ? 1.5f : 2.25f;
         }
     }
 }
