@@ -22,7 +22,7 @@ public class DaggerScript : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(1);
-        if (other.CompareTag("Enemy") && (stateInfo.IsName("DaggerAttack") || stateInfo.IsName("PunchRight")))
+        if (other.CompareTag("Enemy") && stateInfo.IsName("DaggerAttack" ))
         {
             /*
             Enemy enemy = other.GetComponent<Enemy>();

@@ -12,15 +12,23 @@ public class PlayerCombat : MonoBehaviour
     public float mageCost = 20;
     public float dwarfCost = 15;
     public Animator animator;
-    private PlayerMovement movementScript;
+    public Animator animator2;
+    public PlayerMovement movementScript;
     [SerializeField] private CharacterManager charManager;
     public AnimatorStateInfo stateInfo;
+    public AnimatorStateInfo stateInfo2;
     [SerializeField] private GameObject spell;
     [SerializeField] private GameObject swordVFX;
     [SerializeField] private Transform swordVFXPosition;
+    [SerializeField] private GameObject dwarfVFX;
+    [SerializeField] private Transform dwarfVFXPosition;
     [SerializeField] private Image hpBar;
     [SerializeField] private Image staminaBar;
     [SerializeField] private TextMeshProUGUI staminaText;
+    public Vector3 dwarfAtkDirection;
+    public GameObject dwarf;
+    public bool dwarfAttack = false;
+    public bool isAttacking = false;
 
     void Start()
     {
@@ -35,6 +43,8 @@ public class PlayerCombat : MonoBehaviour
         staminaBar.fillAmount = stamina/100;
 
         stateInfo = animator.GetCurrentAnimatorStateInfo(1);
+        stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
+
         if (Input.GetButton("Fire1"))
         {
             switch (charManager.current)
@@ -55,7 +65,9 @@ public class PlayerCombat : MonoBehaviour
         }
 
         if (stamina < 100){
-            stamina += 0.025f;
+            stamina += 0.05f;
+            if (stamina > 100) stamina = 100;
+            //stamina += 100f;
         }
     }
 
@@ -67,9 +79,10 @@ public class PlayerCombat : MonoBehaviour
     void KnightAttack()
     {
         //can only attack after last attack is done and if not rolling
-        if (!stateInfo.IsName("DaggerAttack") && !stateInfo.IsName("PunchRight") && !animator.IsInTransition(1) && !movementScript.isRolling)
+        if (!stateInfo.IsName("DaggerAttack") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(knightCost)) return;
+            isAttacking = true;
             AttackStamina(knightCost);
             animator.SetTrigger("Attack");
             StartCoroutine(DelayedSword());
@@ -81,9 +94,10 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("SpellCast") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(mageCost)) return;
+            isAttacking = true;
             AttackStamina(mageCost);
             animator.SetTrigger("Spell"); 
-            StartCoroutine(DelayedSpell());
+            StartCoroutine(DelayedSpell());            
         }
     }
 
@@ -92,6 +106,9 @@ public class PlayerCombat : MonoBehaviour
         yield return new WaitForSeconds(0.7f);
         GameObject newspell = Instantiate(spell, charManager.attacks[1].transform.position, charManager.attacks[1].transform.rotation);
         Destroy(newspell, 5);
+        yield return new WaitForSeconds(0.15f);
+        isAttacking = false;
+
     }
 
     IEnumerator DelayedSword()
@@ -101,16 +118,34 @@ public class PlayerCombat : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
         Destroy(vfx, 1.5f);
+        yield return new WaitForSeconds(0.1f);
+        isAttacking = false;
     }
 
     void DwarfAttack()
     {
-        if (!stateInfo.IsName("DwarfAtk") && !animator.IsInTransition(1) && !movementScript.isRolling)
+        if (!stateInfo2.IsName("DwarfAtk") && !animator2.IsInTransition(0) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(dwarfCost)) return;
+            isAttacking = true;
+            dwarfAttack = true;
+            dwarf.transform.SetParent(null);
             AttackStamina(dwarfCost);
-            animator.SetTrigger("DwarfAtk"); 
+            animator2.SetTrigger("DwarfAtk");
+            StartCoroutine(DelayedDwarf());
         }
+    }
+
+    IEnumerator DelayedDwarf()
+    {
+        yield return new WaitForSeconds(1.44f);
+        GameObject vfx = Instantiate(dwarfVFX, dwarfVFXPosition.position, Quaternion.Euler(0, 0, 0));
+        Destroy(vfx, 1.5f);
+
+        yield return new WaitForSeconds(1.2f);
+        dwarf.transform.SetParent(movementScript.controller2.gameObject.transform);
+        dwarfAttack = false;
+        isAttacking = false;
     }
 
     public bool NoStaminaAlert(float cost)

@@ -28,7 +28,6 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private GameObject swapVFX;
     [SerializeField] private Transform swapVFXPosition;
     [SerializeField] private PlayerCombat playerCombat;
-
     public Image[] characterSlots;
     public Sprite[] characterSprites;
     public ParticleSystem[] UIVfx;
@@ -49,7 +48,7 @@ public class CharacterManager : MonoBehaviour
     void Update()
     {
         //can switch character only if its not in the middle of an attack
-        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.animator.IsInTransition(1)){
+        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
             if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
                 if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
@@ -73,6 +72,7 @@ public class CharacterManager : MonoBehaviour
             StartCoroutine(playerCombat.FadeTextInAndOut(heightText, 2f));
             return;
         } 
+
         playerCombat.stamina -= switchCost;
         GameObject vfx = Instantiate(swapVFX, swapVFXPosition.position, swapVFXPosition.rotation);
         vfx.transform.SetParent(swapVFXPosition);

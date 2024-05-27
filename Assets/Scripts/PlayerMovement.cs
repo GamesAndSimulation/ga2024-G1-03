@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private CharacterController controller;
+    public CharacterController controller;
     private float verticalVelocity;
     //private float groundedTimer;     //to allow rolling when going down ramps
     public float walkSpeed = 2.0f;
@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
         ClickRoll();
 
-        if (!isRolling) //pnly update movement direction if not rolling
+        if (!isRolling && !playerCombat.dwarfAttack)
         {
             move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             if (move.magnitude > 1)
@@ -82,11 +82,13 @@ public class PlayerMovement : MonoBehaviour
             if (move.magnitude > 0.3f)
             {
                 gameObject.transform.forward = move;
+                controller2.gameObject.transform.forward = move;
             }
         }
         else
         {
             Roll();
+            animator2.SetFloat("Speed", 0f);
             move = rollSpeedMultiplier * storedSpeed * rollDirection;
         }
 
@@ -94,8 +96,16 @@ public class PlayerMovement : MonoBehaviour
         
         if (dwarf.activeInHierarchy)
         {
-            controller2.Move(move * Time.deltaTime);
-            controller.gameObject.transform.position = controller2.transform.position;
+            if (!playerCombat.dwarfAttack)
+            {
+                controller2.Move(move * Time.deltaTime);
+                controller.gameObject.transform.position = controller2.transform.position;
+            } 
+            else 
+            {
+                controller.gameObject.transform.position = controller2.transform.position;
+                controller2.gameObject.transform.position = dwarf.transform.position;
+            }
         } else {
             controller.Move(move * Time.deltaTime);
             controller2.gameObject.transform.position = controller.transform.position;
@@ -104,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
 
     void ClickRoll()
     {
-        if (Input.GetButton("Jump") && !isRolling)
+        if (Input.GetButton("Jump") && !isRolling && !playerCombat.isAttacking)
         {
             if (playerCombat.NoStaminaAlert(rollCost)) return;
             playerCombat.stamina -= rollCost;
@@ -136,11 +146,11 @@ public class PlayerMovement : MonoBehaviour
         }
         if (rollTimer <= 0.5f)
         {
-            rollSpeedMultiplier = dwarf.activeInHierarchy ? 1f : 1.5f;
+            rollSpeedMultiplier = 1f;//dwarf.activeInHierarchy ? 1f : 1.5f;
         }
         else if (rollTimer <= 0.8f && rollTimer >= 0.5f)
         {
-            rollSpeedMultiplier = dwarf.activeInHierarchy ? 1.5f : 2.25f;
+            rollSpeedMultiplier = 1.5f;//dwarf.activeInHierarchy ? 1.5f : 2.25f;
         }
     }
 }
