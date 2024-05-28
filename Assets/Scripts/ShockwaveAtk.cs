@@ -7,13 +7,13 @@ public class ShockwaveAtk : MonoBehaviour
     public int damage = 30; 
     private float growthRate = 7f; 
     private float maxRadius = 2.5f;
-
     private SphereCollider shockwaveCollider;
 
     void Start()
     {
         shockwaveCollider = GetComponent<SphereCollider>();
         shockwaveCollider.radius = 0.1f;
+        GetComponent<AudioSource>().Play();
     }
 
     void Update()

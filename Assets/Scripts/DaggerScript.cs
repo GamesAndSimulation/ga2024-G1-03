@@ -10,8 +10,12 @@ public class DaggerScript : MonoBehaviour
 
     void Start()
     {
-     var playerController = FindObjectOfType<PlayerMovement>();
-     animator = playerController.animator;
+        var playerController = FindObjectOfType<PlayerMovement>();
+        animator = playerController.animator;
+
+        var playerCombat = FindObjectOfType<PlayerCombat>();
+        GetComponent<AudioSource>().clip = playerCombat.knightClip;
+        GetComponent<AudioSource>().Play();
     }
 
     void Update()

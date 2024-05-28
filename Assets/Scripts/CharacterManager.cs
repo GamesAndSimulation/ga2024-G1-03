@@ -17,7 +17,7 @@ public enum Characters
 
 public class CharacterManager : MonoBehaviour
 {
-    private float switchCost = 50f;
+    public float switchCost = 50f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
     public Characters current;  
@@ -33,6 +33,7 @@ public class CharacterManager : MonoBehaviour
     public ParticleSystem[] UIVfx;
 
     [SerializeField] private TextMeshProUGUI heightText;
+    [SerializeField] private Image backgroundImage;
 
     void Start()
     {
@@ -69,7 +70,11 @@ public class CharacterManager : MonoBehaviour
 
         if (current == Characters.Dwarf && !HeightCheck())
         {
-            StartCoroutine(playerCombat.FadeTextInAndOut(heightText, 2f));
+            if (heightText.alpha == 0)
+            {
+                StartCoroutine(playerCombat.FadeImageInAndOut(backgroundImage, 2f));
+                StartCoroutine(playerCombat.FadeTextInAndOut(heightText, 2f));
+            }
             return;
         } 
 

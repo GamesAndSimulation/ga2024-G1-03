@@ -66,10 +66,6 @@ public class Projectile : MonoBehaviour {
 		if (!co.gameObject.CompareTag("Bullet") && !collided) {
 			collided = true;
 			
-			if (shotSFX != null && GetComponent<AudioSource>()) {
-				GetComponent<AudioSource>().PlayOneShot(hitSFX);
-			}
-
 			if (trails.Count > 0) {
 				for (int i = 0; i < trails.Count; i++) {
 					trails [i].transform.parent = null;
@@ -90,6 +86,7 @@ public class Projectile : MonoBehaviour {
 
 			if (hitPrefab != null) {
 				var hitVFX = Instantiate(hitPrefab, pos, rot);
+				hitVFX.GetComponent<AudioSource>().PlayOneShot(hitSFX);
 				var ps = hitVFX.GetComponent<ParticleSystem>();
 				if (ps == null) {
 					var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
@@ -105,22 +102,6 @@ public class Projectile : MonoBehaviour {
 	public IEnumerator DestroyParticle(float waitTime) 
 	{
 
-		if (transform.childCount > 0 && waitTime != 0) {
-			List<Transform> tList = new();
-
-			foreach (Transform t in transform.GetChild(0).transform) {
-				tList.Add(t);
-			}		
-
-			while (transform.GetChild(0).localScale.x > 0) {
-				yield return new WaitForSeconds(0.01f);
-				transform.GetChild(0).localScale -= new Vector3(0.1f, 0.1f, 0.1f);
-				for (int i = 0; i < tList.Count; i++) {
-					tList[i].localScale -= new Vector3(0.1f, 0.1f, 0.1f);
-				}
-			}
-		}
-		
 		yield return new WaitForSeconds(waitTime);
 		Destroy(gameObject);
 	}

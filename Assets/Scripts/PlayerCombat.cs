@@ -25,10 +25,13 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Image hpBar;
     [SerializeField] private Image staminaBar;
     [SerializeField] private TextMeshProUGUI staminaText;
+    [SerializeField] private Image backgroundImage;
     public Vector3 dwarfAtkDirection;
     public GameObject dwarf;
     public bool dwarfAttack = false;
     public bool isAttacking = false;
+    [SerializeField] private SoundGeneration soundGeneration;
+    public AudioClip knightClip;
 
     void Start()
     {
@@ -65,6 +68,7 @@ public class PlayerCombat : MonoBehaviour
         }
 
         if (stamina < 100){
+            Debug.Log(stamina);
             stamina += 0.05f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
@@ -82,6 +86,7 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("DaggerAttack") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(knightCost)) return;
+            knightClip = soundGeneration.GenerateAudio();
             isAttacking = true;
             AttackStamina(knightCost);
             animator.SetTrigger("Attack");
@@ -152,7 +157,11 @@ public class PlayerCombat : MonoBehaviour
     {
         if (stamina < cost)
         {
-            StartCoroutine(FadeTextInAndOut(staminaText, 0.5f));
+            if (staminaText.alpha == 0)
+            {
+                StartCoroutine(FadeImageInAndOut(backgroundImage, 1f));
+                StartCoroutine(FadeTextInAndOut(staminaText, 1f));
+            }
             return true;
         }
 
@@ -185,6 +194,37 @@ public class PlayerCombat : MonoBehaviour
         }
 
         text.alpha = 0;
+    }
+
+    public IEnumerator FadeImageInAndOut(Image image, float duration)
+    {
+        float halfDuration = duration / 2f;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            Color tempColor = image.color;
+            tempColor.a = Mathf.Lerp(0, 0.9f, elapsedTime / halfDuration);
+            image.color = tempColor;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            Color tempColor = image.color;
+            tempColor.a = Mathf.Lerp(0.9f, 0, elapsedTime / halfDuration);
+            image.color = tempColor;
+            yield return null;
+        }
+
+        Color finalColor = image.color;
+        finalColor.a = 0;
+        image.color = finalColor;
     }
 
 }
