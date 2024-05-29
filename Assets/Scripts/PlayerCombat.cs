@@ -68,7 +68,6 @@ public class PlayerCombat : MonoBehaviour
         }
 
         if (stamina < 100){
-            Debug.Log(stamina);
             stamina += 0.05f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
