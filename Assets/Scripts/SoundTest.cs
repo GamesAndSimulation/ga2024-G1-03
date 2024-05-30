@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundGeneration : MonoBehaviour
@@ -7,6 +9,9 @@ public class SoundGeneration : MonoBehaviour
     private float[] originalSamples;
     private float lastPitchShift = 1.0f;
     private System.Random random = new System.Random();
+    private List<float> pitchHistory = new List<float>();
+    private float minPitchShift = 0.7f;
+    private float maxPitchShift = 1.3f;
 
     void Start()
     {
@@ -36,8 +41,6 @@ public class SoundGeneration : MonoBehaviour
         modifiedClip.SetData(modifiedSamples, 0);
 
         return modifiedClip;
-       // audioSource.clip = modifiedClip;
-        //audioSource.Play();
     }
 
     private void ApplyTimeStretch(ref float[] samples, float stretchFactor)
@@ -91,28 +94,95 @@ public class SoundGeneration : MonoBehaviour
     private float GetAdjustedPitchShift()
     {
         float pitchShift;
+        float oppositeShiftProbability = 0.5f; //base probability for an opposite pitch shift
+        int trendCount = 0;
+        bool isIncreasing = true;
 
-        if (lastPitchShift > 1.0f)
+        //determine the current trend and count consecutive increases or decreases
+        for (int i = pitchHistory.Count - 1; i > 0; i--)
         {
-            // If the last pitch shift was greater than 1, there's a higher chance of getting a lower shift this time.
-            pitchShift = Random.Range(0.8f, 1.2f);
-            if (random.NextDouble() < 0.75)  // 75% chance to be less than 1.0
+            if (pitchHistory[i] > pitchHistory[i - 1])
             {
-                pitchShift = Random.Range(0.8f, 1.0f);
+                if (!isIncreasing)
+                {
+                    pitchHistory = new List<float>();
+                    break;
+                }
+                trendCount++;
+                isIncreasing = true;
+            }
+            else if (pitchHistory[i] < pitchHistory[i - 1])
+            {
+                if (isIncreasing)
+                {
+                    pitchHistory = new List<float>();
+                    break;
+                }
+                trendCount++;
+                isIncreasing = false;
+            }
+            else
+            {
+                pitchHistory = new List<float>();
+                break;
+            }
+        }
+
+        //increase the probability of an opposite pitch shift based on the trend count
+        oppositeShiftProbability += trendCount * 0.1f;
+        oppositeShiftProbability = Mathf.Min(oppositeShiftProbability, 1.0f);
+
+        float lowerBound = Mathf.Max(minPitchShift, lastPitchShift - 0.1f); 
+        float upperBound = Mathf.Min(maxPitchShift, lastPitchShift + 0.1f); 
+
+        if (random.NextDouble() < oppositeShiftProbability)
+        {
+            if (isIncreasing)
+            {
+                //shift towards lower range if the trend was increasing
+                pitchShift = Random.Range(minPitchShift, lowerBound);
+                Debug.Log(3);
+                Debug.Log(pitchShift);
+            }
+            else
+            {
+                //shift towards upper range if the trend was decreasing
+                pitchShift = Random.Range(upperBound, maxPitchShift);
+                Debug.Log(2);
+                Debug.Log(pitchShift);
             }
         }
         else
         {
-            // If the last pitch shift was less than 1, there's a higher chance of getting a higher shift this time.
-            pitchShift = Random.Range(0.8f, 1.2f);
-            if (random.NextDouble() < 0.75)  // 75% chance to be greater than 1.0
-            {
-                pitchShift = Random.Range(1.0f, 1.2f);
-            }
+            //totally random in the the interval if odds didnt hit
+            Debug.Log(1);
+            pitchShift = GetRandomFromIntervals(minPitchShift, lowerBound, upperBound, maxPitchShift);
+            Debug.Log(pitchShift);
         }
 
+        pitchHistory.Add(pitchShift);
+        
         lastPitchShift = pitchShift;
         return pitchShift;
+    }
+
+    private float GetRandomFromIntervals(float min1, float max1, float min2, float max2)
+    {
+        
+        float length1 = max1 - min1;
+        float length2 = max2 - min2;
+        float totalLength = length1 + length2;
+
+        float interval1Probability = length1 / totalLength;
+
+        if (Random.value < interval1Probability)
+        {
+            return Random.Range(min1, max1);
+        }
+        else
+        {
+            return Random.Range(min2, max2);
+        }
     }
 
 }

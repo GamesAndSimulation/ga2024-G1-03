@@ -8,6 +8,7 @@ public class ShockwaveAtk : MonoBehaviour
     private float growthRate = 7f; 
     private float maxRadius = 2.5f;
     private SphereCollider shockwaveCollider;
+    public bool isPlayer;
 
     void Start()
     {
@@ -30,15 +31,20 @@ public class ShockwaveAtk : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))
+        string otherTag = isPlayer ? "Enemy" : "Player";
+        if (isPlayer)
         {
-            /*
-            Enemy enemy = other.GetComponent<Enemy>();
-            if (enemy != null)
+            if (other.CompareTag("Enemy"))
             {
-                enemy.TakeDamage(damage);
-            }*/
-            Debug.Log("enemy hit");
+                //Debug.Log("enemy hit");
+            }
+        }
+        else
+        {
+            if (other.CompareTag("Player"))
+            {
+                //Debug.Log("player hit");
+            }
         }
     }
 }

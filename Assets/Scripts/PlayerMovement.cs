@@ -7,11 +7,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private CameraManager cameraManager;
     public CharacterController controller;
     private float verticalVelocity;
-    //private float groundedTimer;     //to allow rolling when going down ramps
+    //private float groundedTimer;    
     public float walkSpeed = 2.0f;
     public float runSpeed = 3.0f;
     public float jumpHeight = 1.0f;
-    public float gravityValue = 9.81f;
+    private float gravityValue = 9.81f;
     private float rollSpeedMultiplier = 2f; 
     private float rollDuration = 1f;        
     public Animator animator;
@@ -158,9 +158,9 @@ public class PlayerMovement : MonoBehaviour
             isRolling = false;
         }
 
-        if (storedSpeed < 0.5f)
+        if (storedSpeed < 2f)
         {
-            storedSpeed = 1.0f;
+            storedSpeed = 2.0f;
             if (rollTimer > 0.8f)
             {
                 rollSpeedMultiplier = 0f;
@@ -168,11 +168,11 @@ public class PlayerMovement : MonoBehaviour
         }
         if (rollTimer <= 0.5f)
         {
-            rollSpeedMultiplier = 1f;//dwarf.activeInHierarchy ? 1f : 1.5f;
+            rollSpeedMultiplier = 1.5f;
         }
         else if (rollTimer <= 0.8f && rollTimer >= 0.5f)
         {
-            rollSpeedMultiplier = 1.5f;//dwarf.activeInHierarchy ? 1.5f : 2.25f;
+            rollSpeedMultiplier = 2.25f;
         }
     }
 }
