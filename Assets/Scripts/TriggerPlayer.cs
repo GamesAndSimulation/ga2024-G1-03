@@ -22,7 +22,7 @@ public class TriggerPlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            combatScript.TakeDamage(30);
+            combatScript.TakeDamage(10);
         }
     }
 }
