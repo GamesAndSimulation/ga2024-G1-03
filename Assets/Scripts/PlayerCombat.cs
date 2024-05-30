@@ -79,6 +79,11 @@ public class PlayerCombat : MonoBehaviour
         stamina -= cost;
     }
 
+    public void TakeDamage(float dmg)
+    {
+        health -= dmg;
+    }
+
     void KnightAttack()
     {
         //can only attack after last attack is done and if not rolling

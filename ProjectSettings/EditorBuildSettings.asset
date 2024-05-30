@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/pedro.unity
+    path: Assets/Scenes/Level 2.unity
     guid: e0368d230f2900949b43020813f15384
   - enabled: 1
     path: Assets/Scenes/Level_01_The_Forest.unity
