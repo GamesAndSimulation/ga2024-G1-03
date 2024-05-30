@@ -10,7 +10,7 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
-       /* if (Input.GetKeyDown(KeyCode.Escape)) 
+        if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             if (isPaused)
             {
@@ -20,7 +20,7 @@ public class PauseMenu : MonoBehaviour
             {
                 Pause();
             }
-        }*/
+        }
     }
 
     public void Resume()

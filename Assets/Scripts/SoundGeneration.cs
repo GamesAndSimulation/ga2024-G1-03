@@ -17,7 +17,6 @@ public class SoundGeneration : MonoBehaviour
     {
         originalSamples = new float[originalClip.samples * originalClip.channels];
         originalClip.GetData(originalSamples, 0);
-        //audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -96,15 +95,18 @@ public class SoundGeneration : MonoBehaviour
         float pitchShift;
         float oppositeShiftProbability = 0.5f; //base probability for an opposite pitch shift
         int trendCount = 0;
-        bool isIncreasing = true;
+        bool isIncreasing = false;
 
         //determine the current trend and count consecutive increases or decreases
+        //if (pitchHistory.Count >= 2)
+        //{
         for (int i = pitchHistory.Count - 1; i > 0; i--)
         {
             if (pitchHistory[i] > pitchHistory[i - 1])
             {
                 if (!isIncreasing)
                 {
+                    isIncreasing = true;
                     pitchHistory = new List<float>();
                     break;
                 }
@@ -115,6 +117,7 @@ public class SoundGeneration : MonoBehaviour
             {
                 if (isIncreasing)
                 {
+                    isIncreasing = false;
                     pitchHistory = new List<float>();
                     break;
                 }
@@ -123,10 +126,12 @@ public class SoundGeneration : MonoBehaviour
             }
             else
             {
+                isIncreasing = !isIncreasing;
                 pitchHistory = new List<float>();
                 break;
             }
         }
+       // }
 
         //increase the probability of an opposite pitch shift based on the trend count
         oppositeShiftProbability += trendCount * 0.1f;
@@ -141,27 +146,21 @@ public class SoundGeneration : MonoBehaviour
             {
                 //shift towards lower range if the trend was increasing
                 pitchShift = Random.Range(minPitchShift, lowerBound);
-                Debug.Log(3);
-                Debug.Log(pitchShift);
             }
             else
             {
                 //shift towards upper range if the trend was decreasing
                 pitchShift = Random.Range(upperBound, maxPitchShift);
-                Debug.Log(2);
-                Debug.Log(pitchShift);
             }
         }
         else
         {
             //totally random in the the interval if odds didnt hit
-            Debug.Log(1);
             pitchShift = GetRandomFromIntervals(minPitchShift, lowerBound, upperBound, maxPitchShift);
-            Debug.Log(pitchShift);
         }
 
         pitchHistory.Add(pitchShift);
-        
+
         lastPitchShift = pitchShift;
         return pitchShift;
     }
