@@ -97,6 +97,11 @@ public class Projectile : MonoBehaviour {
 
 			StartCoroutine(DestroyParticle (0f));
 		}
+
+		if (co.gameObject.CompareTag("Enemy"))
+		{
+			Debug.Log("enemy hit");
+		}
 	}
 
 	public IEnumerator DestroyParticle(float waitTime) 
