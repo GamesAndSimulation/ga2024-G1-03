@@ -9,7 +9,7 @@ public class LeapEnemy : MonoBehaviour
     //private float verticalVelocity;
     //private float gravityValue = 9.81f;
     public float walkSpeed = 3.0f; 
-    public float leapSpeed = 7.0f; 
+    private float leapSpeed; 
     public float leapInterval = 2.0f; 
     private float nextLeapTime = 2f;
     private Animator animator;
@@ -83,7 +83,7 @@ public class LeapEnemy : MonoBehaviour
         }
     }
 
-    IEnumerator Leap()
+    private IEnumerator Leap()
     {
         canMove = false;
         animator.SetTrigger("leap");
@@ -104,7 +104,7 @@ public class LeapEnemy : MonoBehaviour
         yield return new WaitForSeconds(leapDuration);
 
         GameObject vfx = Instantiate(attackVFX, attackVFXPos.position, Quaternion.Euler(0, 0, 0));
-        Destroy(vfx, 1.5f);
+        Destroy(vfx, 4f);
 
         isLeaping = false;
         canMove = false;

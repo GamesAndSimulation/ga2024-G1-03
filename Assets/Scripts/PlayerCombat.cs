@@ -32,6 +32,7 @@ public class PlayerCombat : MonoBehaviour
     public bool isAttacking = false;
     [SerializeField] private SoundGeneration soundGeneration;
     public AudioClip knightClip;
+    [SerializeField] private BossScript boss;
 
     void Start()
     {
@@ -85,6 +86,7 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("DaggerAttack") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(knightCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             knightClip = soundGeneration.GenerateAudio();
             isAttacking = true;
             AttackStamina(knightCost);
@@ -98,6 +100,7 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("SpellCast") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(mageCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             AttackStamina(mageCost);
             animator.SetTrigger("Spell"); 
@@ -131,6 +134,7 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo2.IsName("DwarfAtk") && !animator2.IsInTransition(0) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(dwarfCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             dwarfAttack = true;
             dwarf.transform.SetParent(null);
@@ -224,6 +228,11 @@ public class PlayerCombat : MonoBehaviour
         Color finalColor = image.color;
         finalColor.a = 0;
         image.color = finalColor;
+    }
+
+    public void TakeDamage()
+    {
+
     }
 
 }

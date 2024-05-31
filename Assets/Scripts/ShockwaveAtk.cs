@@ -31,7 +31,6 @@ public class ShockwaveAtk : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        string otherTag = isPlayer ? "Enemy" : "Player";
         if (isPlayer)
         {
             if (other.CompareTag("Enemy"))
@@ -43,7 +42,7 @@ public class ShockwaveAtk : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                //Debug.Log("player hit");
+                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f));
             }
         }
     }
