@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
                 animator2.SetFloat("Speed", move.magnitude);
 
                 //only align to motion if we are providing enough input
-                if (move.magnitude > 0.3f)
+                if (move.magnitude > 0f)
                 {
                     gameObject.transform.forward = move;
                     controller2.gameObject.transform.forward = move;
