@@ -28,6 +28,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     public Vector3 dwarfAtkDirection;
     public GameObject dwarf;
+    public GameObject hitbox;
     public bool dwarfAttack = false;
     public bool isAttacking = false;
     [SerializeField] private SoundGeneration soundGeneration;
@@ -110,6 +111,15 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    void CreateHitbox()
+    {
+        Vector3 bulletTransform = new Vector3(transform.forward.x, 1, transform.forward.z);
+        GameObject instantiatedBullet =
+        Instantiate(hitbox, transform.position + bulletTransform, transform.rotation);
+
+        Destroy(instantiatedBullet, 0.5f);        
+    }
+
     IEnumerator DelayedSpell()
     {
         yield return new WaitForSeconds(0.7f);
@@ -125,6 +135,7 @@ public class PlayerCombat : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
 
         yield return new WaitForSeconds(0.3f);
+        CreateHitbox();
         GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
         Destroy(vfx, 1.5f);
         yield return new WaitForSeconds(0.1f);
