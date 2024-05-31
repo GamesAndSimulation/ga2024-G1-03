@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
         verticalVelocity -= gravityValue * Time.deltaTime;
 
         ClickRoll();
-        Debug.Log(isStunned);
+
         if (!cameraManager.isFreeCameraActive && !isStunned){
 
             if (!isRolling && !playerCombat.dwarfAttack)
@@ -179,22 +179,16 @@ public class PlayerMovement : MonoBehaviour
 
     public IEnumerator Stun(float duration)
     {
-        Debug.Log("Stun started with duration: " + duration);
+
         isStunned = true;
         animator.SetTrigger("Hit");
         animator2.SetTrigger("Hit");
 
-        // Log before yield
-        Debug.Log("Before WaitForSeconds: " + Time.time);
-        Debug.Log("Time.timeScale: " + Time.timeScale);
         yield return new WaitForSeconds(duration);
 
-        // Log after yield
-        Debug.Log("After WaitForSeconds: " + Time.time);
-        Debug.Log("Setting isStunned to false");
-
         isStunned = false;
-        Debug.Log("Stun ended");
+        animator.SetTrigger("StunEnd");
+        animator2.SetTrigger("StunEnd");
     }
 }
 

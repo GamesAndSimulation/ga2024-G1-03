@@ -115,7 +115,6 @@ public class PlayerCombat : MonoBehaviour
         Destroy(newspell, 5);
         yield return new WaitForSeconds(0.15f);
         isAttacking = false;
-
     }
 
     IEnumerator DelayedSword()

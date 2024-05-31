@@ -13981,6 +13981,51 @@ Transform:
   - {fileID: 1078465811}
   m_Father: {fileID: 1082480623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1311498787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1311498788}
+  - component: {fileID: 1311498789}
+  m_Layer: 6
+  m_Name: SwordVFXSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1311498788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311498787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.99, z: 1.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7544267256477306282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1311498789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311498787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670647286145ae649a06f5f1121c9642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalClip: {fileID: 8300000, guid: a652877b012108e41871f867ada9f176, type: 3}
 --- !u!4 &1314204396 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4602525466815046, guid: bd5e0848345359e46a3385c211263390, type: 3}
@@ -18893,7 +18938,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9.999786, y: -56}
+  m_AnchoredPosition: {x: 9.999908, y: -56}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1839728826
@@ -27133,6 +27178,7 @@ Transform:
   - {fileID: 1355310819}
   - {fileID: 1681709967}
   - {fileID: 1228769619}
+  - {fileID: 1311498788}
   - {fileID: 7544580958723719728}
   - {fileID: 7544261146045690356}
   m_Father: {fileID: 0}
@@ -27703,12 +27749,18 @@ MonoBehaviour:
   swordsSpawn: {fileID: 1355310819}
   sword: {fileID: 5841508261169050062}
   swordsAudio: {fileID: 1355310820}
+  animator: {fileID: 0}
   player: {fileID: 1541122427}
   rocks: {fileID: 7820112444755760515, guid: f52e2d2e91d1d67458aaaf5371567039, type: 3}
   rocksSpawn: {fileID: 1681709967}
   shockwaveVFX: {fileID: 5172115287358184471, guid: 2877577e04915a644974d9b707924620, type: 3}
   shockwavePos: {fileID: 1228769619}
-  walkSpeed: 2
+  walkSpeed: 1
+  stunPlayer: 0
+  swordVFX: {fileID: 380580118245172063, guid: 2088c0833b146da4e8ba615243a4310b, type: 3}
+  swordVFXPosition: {fileID: 1311498788}
+  swordClip: {fileID: 8300000, guid: a652877b012108e41871f867ada9f176, type: 3}
+  soundGeneration: {fileID: 1311498789}
 --- !u!1001 &7871136239734819233
 PrefabInstance:
   m_ObjectHideFlags: 0

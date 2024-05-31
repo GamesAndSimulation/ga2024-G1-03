@@ -9,7 +9,7 @@ public class BossScript : MonoBehaviour
     [SerializeField] private Transform swordsSpawn;
     [SerializeField] private Transform sword;
     [SerializeField] private AudioSource swordsAudio;
-    private Animator animator;
+    public Animator animator;
     private float distanceToPlayer;
     public Transform player;
     private Vector3 direction;
@@ -25,9 +25,15 @@ public class BossScript : MonoBehaviour
     private bool canMove = true;
     private Vector3 leapDirection;
     public float walkSpeed = 3.0f; 
-    private float leapSpeed; 
-    private float nextLeapTime = 5f;
+    private float nextLeapTime = 50f;
     private float leapInterval = 50f; 
+    public bool stunPlayer = false; 
+    private float meleeCooldown = 5f;
+    private float lastMeleeTime = 0f;
+    [SerializeField] private GameObject swordVFX;
+    [SerializeField] private Transform swordVFXPosition;
+    public AudioClip swordClip;
+    [SerializeField] private SoundGeneration soundGeneration;
 
 
     void Start()
@@ -39,16 +45,26 @@ public class BossScript : MonoBehaviour
     void Update()
     {
 
+        if (stunPlayer)
+        {
+            stunPlayer = false;
+            StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f));
+        }
+
         distanceToPlayer = Vector3.Distance(transform.position, player.position);
         direction = (player.position - transform.position).normalized;
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            StartCoroutine(SpinSwords());
+            //StartCoroutine(SpinSwords());
+           // StartCoroutine(BasicCombo());
+           BasicCombo();
+            //StartCoroutine(JumpCombo());
         }
 
+        Melee();
+
         move = new(0,0,0);
-        direction = (player.position - transform.position).normalized;
 
         if (!isChasing && distanceToPlayer > startChaseDistance)
         {
@@ -161,14 +177,10 @@ public class BossScript : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         //gameObject.transform.forward = direction;
 
-        //min-max'd distance to be leap speed
-        float scaledLeapSpeed = Mathf.Lerp(1f, 7f, (distanceToPlayer - 2f) / (7f - 2f));
-        leapSpeed = scaledLeapSpeed;
-
         //lock direction for the leap
         leapDirection = transform.forward;
         isLeaping = true;
-        canMove = true;
+        //canMove = true;
 
         float leapDuration = 1.5f;
         yield return new WaitForSeconds(leapDuration);
@@ -180,7 +192,6 @@ public class BossScript : MonoBehaviour
         rock.transform.SetParent(null);
         Destroy(rock, 5f);
         isLeaping = false;
-        canMove = false;
 
         yield return new WaitForSeconds(5f);
         canMove = true;
@@ -198,6 +209,62 @@ public class BossScript : MonoBehaviour
             else
             animator.SetTrigger("DodgeL");
         }
+    }
+
+    private void Melee()
+    {
+        float currentTime = Time.time;
+        if (distanceToPlayer < startChaseDistance && currentTime >= lastMeleeTime + meleeCooldown && canMove) 
+        {
+            gameObject.transform.forward = direction;
+            lastMeleeTime = currentTime;
+            swordClip = soundGeneration.GenerateAudio();
+            animator.SetTrigger("Melee");
+            StartCoroutine(DelayedSword(false));
+        }
+    }
+
+    private IEnumerator DelayedSword(bool inverse)
+    {
+        Quaternion baseRotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
+        Quaternion rotation = inverse ? Quaternion.Euler(180, 0, 0) * baseRotation : baseRotation;
+
+        yield return new WaitForSeconds(0.3f);
+        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
+        Destroy(vfx, 1.5f);
+        yield return new WaitForSeconds(0.1f);
+    }
+
+    private IEnumerator BasicCombo()
+    {
+        canMove = false;
+        animator.SetTrigger("Combo");   //not working cause of something to do with animation
+        
+        yield return new WaitForSeconds(0.3f);
+        StartCoroutine(DelayedSword(true));
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(DelayedSword(false));
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(DelayedSword(true));
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(DelayedSword(false));
+        yield return new WaitForSeconds(3f);
+        canMove = true;
+    }
+
+    private IEnumerator JumpCombo()
+    {
+        canMove = false;
+        animator.SetTrigger("ComboJump");
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(DelayedSword(false));
+        yield return new WaitForSeconds(0.4f);
+        StartCoroutine(DelayedSword(true));
+        gameObject.transform.forward = direction;
+        yield return new WaitForSeconds(1.2f);
+        StartCoroutine(DelayedSword(false));
+        yield return new WaitForSeconds(3f);
+        canMove = true;
     }
 
 }
