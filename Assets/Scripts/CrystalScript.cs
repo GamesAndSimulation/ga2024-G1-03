@@ -32,6 +32,7 @@ public class CrystalScript: MonoBehaviour
                     current.transform.position = newPosition[i];
                 }
             }
+            Destroy(collision.gameObject);
             Destroy(gameObject);
         }
     }
