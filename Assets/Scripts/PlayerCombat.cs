@@ -43,8 +43,8 @@ public class PlayerCombat : MonoBehaviour
     void Update()
     {
 
-        hpBar.fillAmount = health/100;
-        staminaBar.fillAmount = stamina/100;
+        hpBar.fillAmount = health / 100;
+        staminaBar.fillAmount = stamina / 100;
 
         stateInfo = animator.GetCurrentAnimatorStateInfo(1);
         stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
@@ -68,7 +68,8 @@ public class PlayerCombat : MonoBehaviour
 
         }
 
-        if (stamina < 100){
+        if (stamina < 100)
+        {
             stamina += 0.05f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
@@ -106,8 +107,8 @@ public class PlayerCombat : MonoBehaviour
             if (NoStaminaAlert(mageCost)) return;
             isAttacking = true;
             AttackStamina(mageCost);
-            animator.SetTrigger("Spell"); 
-            StartCoroutine(DelayedSpell());            
+            animator.SetTrigger("Spell");
+            StartCoroutine(DelayedSpell());
         }
     }
 
@@ -117,7 +118,7 @@ public class PlayerCombat : MonoBehaviour
         GameObject instantiatedBullet =
         Instantiate(hitbox, transform.position + bulletTransform, transform.rotation);
 
-        Destroy(instantiatedBullet, 0.5f);        
+        Destroy(instantiatedBullet, 0.5f);
     }
 
     IEnumerator DelayedSpell()
@@ -132,11 +133,11 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator DelayedSword()
     {
-        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
+        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y + 180);
 
         yield return new WaitForSeconds(0.3f);
         CreateHitbox();
-        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
+        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward / 3), rotation);
         Destroy(vfx, 1.5f);
         yield return new WaitForSeconds(0.1f);
         isAttacking = false;

@@ -3120,7 +3120,7 @@ MonoBehaviour:
   backgroundImage: {fileID: 254134625}
   dwarfAtkDirection: {x: 0, y: 0, z: 0}
   dwarf: {fileID: 2136288806}
-  hitbox: {fileID: 0}
+  hitbox: {fileID: 184440314}
   dwarfAttack: 0
   isAttacking: 0
   soundGeneration: {fileID: 2147109145}
@@ -9808,7 +9808,7 @@ Transform:
   m_GameObject: {fileID: 562913565}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -61.266, y: 15.216314, z: 80.92718}
+  m_LocalPosition: {x: -8.000001, y: 15.216316, z: -0.66281986}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13549,7 +13549,7 @@ Transform:
   m_GameObject: {fileID: 780202492}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -61.266, y: 15.216314, z: 80.92718}
+  m_LocalPosition: {x: -8.000001, y: 15.216316, z: -0.66281986}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16066,7 +16066,7 @@ Transform:
   m_GameObject: {fileID: 906570210}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -61.266, y: 7.737, z: 87.59}
+  m_LocalPosition: {x: -8, y: 7.737, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
