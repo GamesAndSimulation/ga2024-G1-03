@@ -12,8 +12,6 @@ public class NewCharacterZone : MonoBehaviour
     public Characters character;
     private bool inArea = false;
 
-    [SerializeField] private dialogue dialogueScript;
-
     void Start()
     {
         pickupText.enabled = false;
@@ -21,7 +19,7 @@ public class NewCharacterZone : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && pickupText.enabled && dialogueScript.dialogueFinished){
+        if (Input.GetKeyDown(KeyCode.E) && pickupText.enabled){
             charManager.UnlockCharacter(character, vfxTransform);
             Destroy(transform.parent.gameObject);
         }
