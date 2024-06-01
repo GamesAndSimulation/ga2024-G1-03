@@ -12,8 +12,6 @@ public class BossSword : MonoBehaviour
     {
         var bossController = FindObjectOfType<BossScript>();
         animator = bossController.animator;
-
-        GetComponent<AudioSource>().clip = bossController.swordClip;
         GetComponent<AudioSource>().Play();
     }
 
@@ -24,8 +22,7 @@ public class BossSword : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (other.CompareTag("Player") && stateInfo.IsName("Melee"))
+        if (other.CompareTag("Player"))
         {
             Debug.Log("player hit");
         }

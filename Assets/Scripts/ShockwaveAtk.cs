@@ -37,6 +37,12 @@ public class ShockwaveAtk : MonoBehaviour
             {
                 //Debug.Log("enemy hit");
             }
+            
+            if (other.CompareTag("Boss"))
+            {
+                BossScript boss = other.GetComponent<BossScript>();
+                boss.TakeDamage(damage);
+            }
         }
         else
         {

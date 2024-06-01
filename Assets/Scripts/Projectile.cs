@@ -99,8 +99,13 @@ public class Projectile : MonoBehaviour {
 		if (co.gameObject.CompareTag("Enemy"))
 		{
 			Debug.Log("enemy hit");
-			
 		}
+
+		if (co.gameObject.CompareTag("Boss"))
+        {
+            BossScript boss = co.gameObject.GetComponent<BossScript>();
+            boss.TakeDamage(damage);
+        }
 
 		if (co.gameObject.CompareTag("Player"))
 		{

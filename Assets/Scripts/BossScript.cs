@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BossScript : MonoBehaviour
 {
+    public float health = 500f;
     public CharacterController controller;
     [SerializeField] private GameObject swordsPrefab;
     [SerializeField] private Transform swordsSpawn;
@@ -25,25 +26,48 @@ public class BossScript : MonoBehaviour
     private bool canMove = true;
     private Vector3 leapDirection;
     public float walkSpeed = 3.0f; 
-    private float nextLeapTime = 50f;
-    private float leapInterval = 50f; 
     public bool stunPlayer = false; 
     private float meleeCooldown = 5f;
     private float lastMeleeTime = 0f;
     [SerializeField] private GameObject swordVFX;
     [SerializeField] private Transform swordVFXPosition;
-    public AudioClip swordClip;
-    [SerializeField] private SoundGeneration soundGeneration;
+    [SerializeField] private GameObject fireball;
+    [SerializeField] private AudioSource fireballAudio;
+    private float abilityCooldown = 50f;
+    private float lastAbilityTime = 0f;
+    private float comboCooldown = 15f;
+    private float lastComboTime = 0f;
+    private AnimatorStateInfo stateInfo;
+    private bool phaseTwo = false;
+    private bool inAbility = false;
+    private bool transitioning = false;
+    [SerializeField] private Renderer characterRenderer;
+    [SerializeField] private Renderer helmetRenderer;
+    [SerializeField] private Material whiteMaterial; 
+    [SerializeField] private float flashDuration = 0.1f; 
+    private Material originalMaterial;
 
 
     void Start()
     {
         controller = gameObject.GetComponentInParent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        if (characterRenderer != null)
+        {
+            originalMaterial = characterRenderer.material;
+        }
     }
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            //StartCoroutine(FireBall());
+            TakeDamage(50f);
+        }
+
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         if (stunPlayer)
         {
@@ -54,15 +78,12 @@ public class BossScript : MonoBehaviour
         distanceToPlayer = Vector3.Distance(transform.position, player.position);
         direction = (player.position - transform.position).normalized;
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            //StartCoroutine(SpinSwords());
-           // StartCoroutine(BasicCombo());
-           BasicCombo();
-            //StartCoroutine(JumpCombo());
+        if (!transitioning)
+        {       
+            Melee();
+            AbilitiesManager();
+            ComboManager();
         }
-
-        Melee();
 
         move = new(0,0,0);
 
@@ -77,8 +98,7 @@ public class BossScript : MonoBehaviour
 
         if (canMove && (isChasing || isLeaping))
         {
-            
-           // float speed = isLeaping ? leapSpeed : walkSpeed;
+
             float speed = walkSpeed;
 
             if (isLeaping)
@@ -95,17 +115,13 @@ public class BossScript : MonoBehaviour
         }
         animator.SetFloat("Speed", move.magnitude);
 
-        if (Time.time >= nextLeapTime)
-        {
-            nextLeapTime = Time.time + leapInterval;
-            StartCoroutine(Leap());
-        }
     }
 
     private IEnumerator SpinSwords()
     {
 
         canMove = false;
+        inAbility = true;
         animator.SetTrigger("SpinSwords");
         yield return new WaitForSeconds(2.3f);
 
@@ -166,11 +182,14 @@ public class BossScript : MonoBehaviour
         animator.SetTrigger("SpinDone");
         yield return new WaitForSeconds(0.8f);
         canMove = true;
+        inAbility = false;
     }
 
     private IEnumerator Leap()
     {
         canMove = false;
+        inAbility = true;
+        direction = (player.position - transform.position).normalized;
         gameObject.transform.forward = direction;
         animator.SetTrigger("Leap");
 
@@ -194,8 +213,9 @@ public class BossScript : MonoBehaviour
         isLeaping = false;
 
         yield return new WaitForSeconds(5f);
+        animator.SetTrigger("DoneCombo");
         canMove = true;
-        //gameObject.transform.forward = direction;
+        inAbility = false;
     }
 
     public void Dodge()
@@ -214,11 +234,10 @@ public class BossScript : MonoBehaviour
     private void Melee()
     {
         float currentTime = Time.time;
-        if (distanceToPlayer < startChaseDistance && currentTime >= lastMeleeTime + meleeCooldown && canMove) 
+        if (distanceToPlayer < startChaseDistance && currentTime >= lastMeleeTime + meleeCooldown && canMove && (stateInfo.IsName("Idle") || stateInfo.IsName("Walk"))) 
         {
             gameObject.transform.forward = direction;
             lastMeleeTime = currentTime;
-            swordClip = soundGeneration.GenerateAudio();
             animator.SetTrigger("Melee");
             StartCoroutine(DelayedSword(false));
         }
@@ -226,10 +245,12 @@ public class BossScript : MonoBehaviour
 
     private IEnumerator DelayedSword(bool inverse)
     {
+        direction = (player.position - transform.position).normalized;
+        gameObject.transform.forward = direction;
         Quaternion baseRotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
         Quaternion rotation = inverse ? Quaternion.Euler(180, 0, 0) * baseRotation : baseRotation;
-
         yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.1f);
         GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
         Destroy(vfx, 1.5f);
         yield return new WaitForSeconds(0.1f);
@@ -238,7 +259,7 @@ public class BossScript : MonoBehaviour
     private IEnumerator BasicCombo()
     {
         canMove = false;
-        animator.SetTrigger("Combo");   //not working cause of something to do with animation
+        animator.SetTrigger("Combo"); 
         
         yield return new WaitForSeconds(0.3f);
         StartCoroutine(DelayedSword(true));
@@ -248,23 +269,175 @@ public class BossScript : MonoBehaviour
         StartCoroutine(DelayedSword(true));
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(DelayedSword(false));
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
+        animator.SetTrigger("DoneCombo");
         canMove = true;
+        
     }
 
     private IEnumerator JumpCombo()
     {
         canMove = false;
         animator.SetTrigger("ComboJump");
-        yield return new WaitForSeconds(0.2f);
         StartCoroutine(DelayedSword(false));
-        yield return new WaitForSeconds(0.4f);
-        StartCoroutine(DelayedSword(true));
-        gameObject.transform.forward = direction;
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(DelayedSword(true));           //mudar o damage do ultimo hit para mais
+        yield return new WaitForSeconds(1.5f);
         StartCoroutine(DelayedSword(false));
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
+        animator.SetTrigger("DoneCombo");
         canMove = true;
+    }
+
+    private IEnumerator FireBall()
+    {
+        canMove = false;
+        animator.SetTrigger("Slice");
+        yield return new WaitForSeconds(1.3f);
+        direction = (player.position - transform.position).normalized;
+        gameObject.transform.forward = direction;
+        fireballAudio.Play();
+        yield return new WaitForSeconds(0.2f);
+        GameObject slice = Instantiate(fireball, swordVFXPosition.position, swordVFXPosition.rotation);
+        Destroy(slice, 1f);
+        yield return new WaitForSeconds(0.7f);
+        animator.SetTrigger("DoneCombo");
+        yield return new WaitForSeconds(0.3f);
+        canMove = true;
+    }
+
+    private void AbilitiesManager()
+    {
+        float currentTime = Time.time;
+        if (currentTime >= lastAbilityTime + abilityCooldown) 
+        {
+            if (!phaseTwo)
+            {
+                StartCoroutine(SpinSwords());
+                lastAbilityTime = currentTime;
+            }
+            else
+            {
+                //phase two
+                float odd = Random.Range(0f, 1f);
+
+                if (odd < 0.5f)
+                {
+                    StartCoroutine(SpinSwords());
+                } 
+                else
+                {
+                    StartCoroutine(Leap());
+                }
+                lastAbilityTime = currentTime;
+            }
+        }
+    }
+
+    private void ComboManager()
+    {
+        float currentTime = Time.time;
+        if (currentTime >= lastComboTime + comboCooldown) 
+        {
+            if (!phaseTwo)
+            {
+                if (!inAbility)
+                {
+                    float odd = Random.Range(0f, 1f);
+                    
+                    if (odd < 0.5f)
+                    {
+                        StartCoroutine(BasicCombo());
+                    } 
+                    else
+                    {
+                        StartCoroutine(FireBall());
+                    }
+                }
+                lastComboTime = currentTime;
+            }
+            else
+            {
+                //phase two
+                float odd = Random.Range(0f, 1f);
+                lastAbilityTime = currentTime;
+
+                if (odd < 0.4f)
+                {
+                    StartCoroutine(JumpCombo());
+                } 
+                else if (odd < 0.7f)
+                {
+                    StartCoroutine(BasicCombo());
+                }
+                else
+                {
+                    StartCoroutine(FireBall());
+                }
+                lastComboTime = currentTime;
+            }
+
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (!inAbility)
+        { 
+            health -= damage;
+
+            if (characterRenderer != null && whiteMaterial != null)
+            {
+                StartCoroutine(FlashWhite());
+            }
+
+            if (!phaseTwo && health < 250f)
+            {
+                StartCoroutine(StartPhaseTwo());
+            }
+
+            if (health <= 0)
+            {
+                animator.SetTrigger("Die");
+            }
+        }
+    }
+
+    private IEnumerator FlashWhite()
+    {
+        characterRenderer.material = whiteMaterial;
+        helmetRenderer.material = whiteMaterial;
+        yield return new WaitForSeconds(flashDuration/7);
+        characterRenderer.material = originalMaterial;
+        helmetRenderer.material = originalMaterial;
+        yield return new WaitForSeconds(flashDuration/5);
+        characterRenderer.material = whiteMaterial;
+        helmetRenderer.material = whiteMaterial;
+        yield return new WaitForSeconds(flashDuration/7);
+        characterRenderer.material = originalMaterial;
+        helmetRenderer.material = originalMaterial;
+    }
+
+    private IEnumerator StartPhaseTwo()
+    {
+        phaseTwo = true;
+        canMove = false;
+        transitioning = true;
+        animator.SetTrigger("PhaseTwo");
+        //meter falas da historia
+        yield return new WaitForSeconds(2f);
+        animator.SetTrigger("Rise");
+        yield return new WaitForSeconds(2f);
+        //meter efeito power up + damage
+        yield return new WaitForSeconds(5f);
+
+        //reset timers
+        lastAbilityTime = Time.time;
+        lastComboTime = Time.time;
+        lastMeleeTime = Time.time;
+        transitioning = false;
+        canMove = true;
+        
     }
 
 }

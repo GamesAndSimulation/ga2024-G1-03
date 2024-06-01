@@ -36,5 +36,11 @@ public class DaggerScript : MonoBehaviour
             }*/
             Debug.Log("enemy hit");
         }
+
+        if (other.CompareTag("Boss"))
+        {
+            BossScript boss = other.GetComponent<BossScript>();
+            boss.TakeDamage(damage);
+        }
     }
 }
