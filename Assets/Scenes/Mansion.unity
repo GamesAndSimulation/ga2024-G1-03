@@ -9808,7 +9808,7 @@ Transform:
   m_GameObject: {fileID: 562913565}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -8.000001, y: 15.216316, z: -0.66281986}
+  m_LocalPosition: {x: -8.000001, y: 11.266316, z: 2.6771803}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13549,7 +13549,7 @@ Transform:
   m_GameObject: {fileID: 780202492}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -8.000001, y: 15.216316, z: -0.66281986}
+  m_LocalPosition: {x: -8.000001, y: 11.266316, z: 2.6771803}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13718,7 +13718,7 @@ Transform:
   m_GameObject: {fileID: 783558342}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -3.95, z: 3.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13739,6 +13739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   switchCost: 20
   current: 0
+  combatScript: {fileID: 150333922}
   attacks:
   - {fileID: 2147109143}
   - {fileID: 1448145368}

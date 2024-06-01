@@ -20,8 +20,9 @@ public class CharacterManager : MonoBehaviour
     public float switchCost = 50f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
-    public Characters current;  
+    public Characters current;
 
+    public PlayerCombat combatScript;
     public List<GameObject> attacks;
     public List<GameObject> models;
     public GameObject helmet;
