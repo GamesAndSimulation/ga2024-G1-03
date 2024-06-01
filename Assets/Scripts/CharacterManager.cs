@@ -126,6 +126,13 @@ public class CharacterManager : MonoBehaviour
         return isSpaceAvailable;
     }
 
+    void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            combatScript.TakeDamage(10);
+        }
+    }
 
 
 }
