@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using Image = UnityEngine.UI.Image;
 
 public enum Characters
@@ -17,6 +17,7 @@ public enum Characters
 
 public class CharacterManager : MonoBehaviour
 {
+    private float switchCost = 10f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
     public Characters current;  
@@ -27,16 +28,20 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private GameObject swapVFX;
     [SerializeField] private Transform swapVFXPosition;
     [SerializeField] private PlayerCombat playerCombat;
-
     public Image[] characterSlots;
     public Sprite[] characterSprites;
     public ParticleSystem[] UIVfx;
+
+    [SerializeField] private TextMeshProUGUI heightText;
+    [SerializeField] private Image backgroundImage;
 
     void Start()
     {
         unlockedCharacters = new List<Characters>
         {
             Characters.Knight,
+            //Characters.Mage,
+            //Characters.Dwarf
         };
         current = Characters.Knight;
     }
@@ -44,7 +49,7 @@ public class CharacterManager : MonoBehaviour
     void Update()
     {
         //can switch character only if its not in the middle of an attack
-        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.animator.IsInTransition(1)){
+        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
             if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
                 if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
@@ -54,11 +59,28 @@ public class CharacterManager : MonoBehaviour
                 if (unlockedCharacters.Count > 2) SwitchCharacter(unlockedCharacters[2]); 
             }
         }
+    
     }
 
     public void SwitchCharacter(Characters character)
     {
         if (character == current) return;
+
+        if(playerCombat.NoStaminaAlert(switchCost)) return;
+
+        if (current == Characters.Dwarf && !HeightCheck())
+        {
+            if (heightText.alpha == 0)
+            {
+                StartCoroutine(playerCombat.FadeImageInAndOut(backgroundImage, 2f));
+                StartCoroutine(playerCombat.FadeTextInAndOut(heightText, 2f));
+            }
+            return;
+        }
+
+        GetComponent<AudioSource>().Play(); 
+
+        playerCombat.stamina -= switchCost;
         GameObject vfx = Instantiate(swapVFX, swapVFXPosition.position, swapVFXPosition.rotation);
         vfx.transform.SetParent(swapVFXPosition);
         Destroy(vfx, 1);
@@ -82,7 +104,28 @@ public class CharacterManager : MonoBehaviour
         unlockedCharacters.Add(character);
         characterSlots[unlockedCharacters.Count - 1].sprite = characterSprites[(int)character];
         UIVfx[unlockedCharacters.Count - 2].Play();
+       // UIVfx[unlockedCharacters.Count - 2].gameObject.GetComponent<AudioSource>().Play();
         characterSlots[unlockedCharacters.Count - 1].gameObject.SetActive(true);
     }
+
+    //check if dwarf can switch to another character since he is smaller
+    private bool HeightCheck()
+    {
+        Vector3 playerPosition = transform.position;
+        
+        float dwarfHeight = 1.0f; 
+        float otherCharactersHeight = 2.0f; 
+        float playerRadius = 0.5f; 
+
+        Vector3 capsuleStart = playerPosition + Vector3.up * playerRadius;
+        Vector3 capsuleEnd = playerPosition + Vector3.up * (dwarfHeight - playerRadius);
+
+        RaycastHit hit;
+        bool isSpaceAvailable = !Physics.CapsuleCast(capsuleStart, capsuleEnd, playerRadius, Vector3.up, out hit, otherCharactersHeight - dwarfHeight);
+
+        return isSpaceAvailable;
+    }
+
+
 
 }
