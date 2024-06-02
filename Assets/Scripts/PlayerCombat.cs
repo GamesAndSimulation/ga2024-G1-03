@@ -33,15 +33,22 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private SoundGeneration soundGeneration;
     public AudioClip knightClip;
     [SerializeField] private BossScript boss;
+    public BlinkScript blink;
 
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         movementScript = GetComponent<PlayerMovement>();
+        blink = GetComponent<BlinkScript>();
     }
 
     void Update()
     {
+        //for debug, remove later
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            StartCoroutine(TakeDamage(10f));
+        }
 
         hpBar.fillAmount = health/100;
         staminaBar.fillAmount = stamina/100;
@@ -49,7 +56,7 @@ public class PlayerCombat : MonoBehaviour
         stateInfo = animator.GetCurrentAnimatorStateInfo(1);
         stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
 
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButton("Fire1") && !movementScript.isStunned)
         {
             switch (charManager.current)
             {
@@ -69,10 +76,15 @@ public class PlayerCombat : MonoBehaviour
         }
 
         if (stamina < 100){
-            stamina += 0.05f;
+            stamina += 0.1f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
         }
+    }
+
+    void FixedUpdate()
+    {
+        
     }
 
     private void AttackStamina(float cost)
@@ -136,7 +148,7 @@ public class PlayerCombat : MonoBehaviour
             if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             dwarfAttack = true;
-            dwarf.transform.SetParent(null);
+            //dwarf.transform.SetParent(null);
             AttackStamina(dwarfCost);
             animator2.SetTrigger("DwarfAtk");
             StartCoroutine(DelayedDwarf());
@@ -150,7 +162,7 @@ public class PlayerCombat : MonoBehaviour
         Destroy(vfx, 1.5f);
 
         yield return new WaitForSeconds(1.2f);
-        dwarf.transform.SetParent(movementScript.controller2.gameObject.transform);
+        //dwarf.transform.SetParent(movementScript.controller2.gameObject.transform);
         dwarfAttack = false;
         isAttacking = false;
     }
@@ -229,9 +241,20 @@ public class PlayerCombat : MonoBehaviour
         image.color = finalColor;
     }
 
-    public void TakeDamage()
+    public IEnumerator TakeDamage(float damage)
     {
+        if(!movementScript.isRolling)
+        {
+            health -= damage;
+            animator.SetTrigger("Hit");
+            animator2.SetTrigger("Hit");
+            movementScript.isStunned = true;
+            StartCoroutine(blink.FlashWhite(0.5f));
+            yield return new WaitForSeconds(0.2f);
+            movementScript.isStunned = false;
+        }
 
     }
+
 
 }

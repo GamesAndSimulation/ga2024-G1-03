@@ -26,6 +26,8 @@ public class LeapEnemy : MonoBehaviour
     private Vector3 direction;
     public GameObject attackVFX;
     public Transform attackVFXPos;
+    private float gravityValue = 9.81f;
+    private float verticalVelocity;
 
     void Start()
     {
@@ -35,14 +37,14 @@ public class LeapEnemy : MonoBehaviour
 
     void Update()
     {
-        /*bool groundedPlayer = controller.isGrounded;
+        bool grounded = controller.isGrounded;
 
-        if (groundedPlayer && verticalVelocity < 0)
+        if (grounded && verticalVelocity < 0)
         {
             verticalVelocity = 0f;
         }
+        verticalVelocity -= gravityValue * Time.deltaTime;
 
-        verticalVelocity -= gravityValue * Time.deltaTime;*/
         distanceToPlayer = Vector3.Distance(transform.position, player.position);
         move = new(0,0,0);
         direction = (player.position - transform.position).normalized;
@@ -70,8 +72,8 @@ public class LeapEnemy : MonoBehaviour
                 move = new Vector3(direction.x, 0, direction.z) * speed;
                 gameObject.transform.forward = move;
             }
-
             
+            move.y = verticalVelocity;
             controller.Move(move * Time.deltaTime);
         }
         animator.SetFloat("speed", move.magnitude);

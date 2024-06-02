@@ -14,7 +14,9 @@ public class ShockwaveAtk : MonoBehaviour
     {
         shockwaveCollider = GetComponent<SphereCollider>();
         shockwaveCollider.radius = 0.1f;
-        GetComponent<AudioSource>().Play();
+        
+        if (TryGetComponent<AudioSource>(out var audio))
+            audio.Play();
     }
 
     void Update()
@@ -35,7 +37,7 @@ public class ShockwaveAtk : MonoBehaviour
         {
             if (other.CompareTag("Enemy"))
             {
-                //Debug.Log("enemy hit");
+                other.GetComponent<EnemyHealth>().TakeDamage(damage);
             }
             
             if (other.CompareTag("Boss"))
@@ -48,7 +50,7 @@ public class ShockwaveAtk : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f));
+                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, damage));
             }
         }
     }

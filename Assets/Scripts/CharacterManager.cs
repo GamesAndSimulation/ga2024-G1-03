@@ -17,7 +17,7 @@ public enum Characters
 
 public class CharacterManager : MonoBehaviour
 {
-    public float switchCost = 50f;
+    private float switchCost = 10f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
     public Characters current;  

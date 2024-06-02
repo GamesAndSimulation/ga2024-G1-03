@@ -6,8 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
     public CharacterController controller;
-    private float verticalVelocity;
-    //private float groundedTimer;    
+    private float verticalVelocity;  
     public float walkSpeed = 2.0f;
     public float runSpeed = 3.0f;
     public float jumpHeight = 1.0f;
@@ -21,11 +20,11 @@ public class PlayerMovement : MonoBehaviour
     private float storedSpeed;
     public Animator animator2;
     public CharacterController controller2;
-    [SerializeField] private GameObject dwarf;
+    public GameObject dwarf;
     private PlayerCombat playerCombat;
     public float rollCost = 20f;
     public Vector3 move;
-    private bool isStunned = false;
+    public bool isStunned = false;
 
     void Start()
     {
@@ -36,22 +35,24 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         bool groundedPlayer = controller.isGrounded;
-        /*if (groundedPlayer)
-        {
-            //cooldown interval to allow reliable rolling even when coming down ramps
-            groundedTimer = 0.2f;
-        }
-        if (groundedTimer > 0)
-        {
-            groundedTimer -= Time.deltaTime;
-        }*/
+        bool groundedDwarf = controller2.isGrounded;
 
         //slam into the ground
-        if (groundedPlayer && verticalVelocity < 0)
+        if (dwarf.activeInHierarchy)
         {
-            verticalVelocity = 0f;
+            if (groundedDwarf && verticalVelocity < 0)
+            {
+                verticalVelocity = 0f;
+            }
         }
-
+        else
+        {
+            if (groundedPlayer && verticalVelocity < 0)
+            {
+                verticalVelocity = 0f;
+            }
+        }
+        
         //apply gravity
         verticalVelocity -= gravityValue * Time.deltaTime;
 
@@ -137,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
 
     void ClickRoll()
     {
-        if (Input.GetButton("Jump") && !isRolling && !playerCombat.isAttacking)
+        if (Input.GetButton("Jump") && !isRolling && !playerCombat.isAttacking && !isStunned)
         {
             if (playerCombat.NoStaminaAlert(rollCost)) return;
             playerCombat.stamina -= rollCost;
@@ -177,18 +178,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public IEnumerator Stun(float duration)
+    public IEnumerator Stun(float duration, float damage)
     {
-
-        isStunned = true;
-        animator.SetTrigger("Hit");
-        animator2.SetTrigger("Hit");
-
-        yield return new WaitForSeconds(duration);
-
-        isStunned = false;
-        animator.SetTrigger("StunEnd");
-        animator2.SetTrigger("StunEnd");
+        if(!isStunned && !isRolling)
+        {
+            animator.SetFloat("Speed", 0f);
+            playerCombat.health -= damage;
+            isStunned = true;
+            animator.SetTrigger("Stun");
+            animator2.SetTrigger("Stun");
+            StartCoroutine(playerCombat.blink.FlashWhite(0.5f));
+            yield return new WaitForSeconds(duration+0.3f);
+            isStunned = false;
+            animator.SetTrigger("StunEnd");
+            animator2.SetTrigger("StunEnd");
+        }
+        
     }
 }
 
