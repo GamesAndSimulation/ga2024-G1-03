@@ -7,6 +7,7 @@ using TMPro;
 public class OpenDoor : MonoBehaviour
 {
     public TextMeshProUGUI pickupText;
+    public AudioSource openSound;
     public GameObject doorLeft;
     public GameObject doorRight;
 
@@ -20,6 +21,7 @@ public class OpenDoor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && pickupText.enabled){
             doorLeft.transform.eulerAngles = new Vector3(0, 180, 0);
             doorRight.transform.eulerAngles = new Vector3(0, 180, 0);
+            openSound.Play();
             Destroy(gameObject);
         }
     }
