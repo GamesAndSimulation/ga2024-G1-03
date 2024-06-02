@@ -76,15 +76,10 @@ public class PlayerCombat : MonoBehaviour
         }
 
         if (stamina < 100){
-            stamina += 0.1f;
+            stamina += 0.1f * Time.deltaTime * 60f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
         }
-    }
-
-    void FixedUpdate()
-    {
-        
     }
 
     private void AttackStamina(float cost)
@@ -253,8 +248,11 @@ public class PlayerCombat : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
             movementScript.isStunned = false;
         }
-
     }
 
+    private void Die()
+    {
+        
+    }
 
 }

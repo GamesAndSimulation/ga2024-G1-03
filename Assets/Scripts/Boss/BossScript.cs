@@ -37,7 +37,7 @@ public class BossScript : MonoBehaviour
     [SerializeField] private GameObject fireball;
     [SerializeField] private AudioSource fireballAudio;
     [SerializeField] private GameObject jumpTrigger;
-    private float abilityCooldown = 50f;
+    private float abilityCooldown = 40f;
     private float lastAbilityTime = 0f;
     private float comboCooldown = 15f;
     private float lastComboTime = 0f;
@@ -286,9 +286,9 @@ public class BossScript : MonoBehaviour
         StartCoroutine(DelayedSword(true));
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(DelayedSword(false));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(DelayedSword(true));
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
+
+        //yield return new WaitForSeconds(0.5f);
         StartCoroutine(DelayedSword(false));
         yield return new WaitForSeconds(2f);
 
@@ -306,7 +306,7 @@ public class BossScript : MonoBehaviour
 
         StartCoroutine(DelayedSword(false));
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(DelayedSword(true));           //mudar o damage do ultimo hit para mais
+        StartCoroutine(DelayedSword(true));          
         yield return new WaitForSeconds(1.5f);
         jumpTrigger.SetActive(true);
         StartCoroutine(DelayedSword(false));
