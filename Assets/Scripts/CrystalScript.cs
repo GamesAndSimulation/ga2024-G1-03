@@ -6,9 +6,6 @@ using UnityEngine.TextCore.Text;
 
 public class CrystalScript: MonoBehaviour
 {
-    public GameObject[] move;
-    public Vector3[] newPosition;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -22,19 +19,10 @@ public class CrystalScript: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("Magic"))
+        if (collision.gameObject.tag.Equals("Magic"))
         {
-            for (int i = 0; i < move.Length; i++)
-            {
-                GameObject current = move[i];
-                if (i < newPosition.Length)
-                {
-                    current.transform.position = newPosition[i];
-                }
-            }
             Destroy(collision.gameObject);
-            Destroy(gameObject);
         }
     }
 
- }
+}

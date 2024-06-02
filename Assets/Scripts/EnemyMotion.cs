@@ -14,6 +14,7 @@ public class EnemyMotion : EnemyScript
 
     void Start()
     {
+        gameObject.SetActive(false);
         speed = speed / 10;
         player = GameObject.FindGameObjectWithTag("Player");
         animator = gameObject.GetComponent<Animator>();
