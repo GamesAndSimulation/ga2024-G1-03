@@ -44,6 +44,12 @@ public class dialogue : MonoBehaviour
 
     private int step;
 
+    [SerializeField]
+    private bool spawnsObjects;
+
+  
+    public bool spawn = false;
+
 
 
     void Update()
@@ -56,6 +62,9 @@ public class dialogue : MonoBehaviour
              step = 0;
              if(!loopable){
                  dialogueFinished = true;
+             }
+             if(spawnsObjects){
+                 spawn = true;
              }
          }
          else
