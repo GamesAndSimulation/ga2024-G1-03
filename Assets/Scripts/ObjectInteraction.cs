@@ -3,6 +3,7 @@ using UnityEngine;
 public class ObjectInteraction : MonoBehaviour
 {
     private ObjectSpawner objectSpawner;
+    private EnemyHealth enemyHealth;
 
     [SerializeField] private AudioClip hitSFX;
     [SerializeField] private GameObject hitFX; 
@@ -19,10 +20,20 @@ public class ObjectInteraction : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void Update()
     {
-       HandleObjectHit();
+        CheckObjectHealth();
     }
+
+    void CheckObjectHealth()
+    {
+        // If enemy health is zero or less, handle object hit
+        if (enemyHealth != null && enemyHealth.health <= 0)
+        {
+            HandleObjectHit();
+        }
+    }
+
 
     void HandleObjectHit()
     {
