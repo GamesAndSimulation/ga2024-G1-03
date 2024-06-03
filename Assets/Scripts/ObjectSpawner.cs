@@ -8,7 +8,7 @@ public class ObjectSpawner : MonoBehaviour
     public GameObject loweredBridge;
 
     public GameObject barrier;
-    private int objectsHit = 0;
+
     private dialogue dialogueScript;
 
     void Start()
@@ -27,13 +27,15 @@ public class ObjectSpawner : MonoBehaviour
 
     void Update()
     {
-        if(dialogueScript != null){
+        if(dialogueScript != null)
+        {
             if (dialogueScript.spawn)
             {
                 SpawnObjects();
                 Destroy(dialogueScript.gameObject);
             }
         }
+        CheckObjectsDestroyed();
     }
 
     // Method to spawn the objects
@@ -45,11 +47,19 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
-    // This method will be called when an object is hit
-    public void ObjectHit()
+    void CheckObjectsDestroyed()
     {
-        objectsHit++;
-        if (objectsHit >= objectsToSpawn.Length)
+        bool allDestroyed = true;
+        foreach (GameObject obj in objectsToSpawn)
+        {
+            if (obj != null && obj.activeInHierarchy)
+            {
+                allDestroyed = false;
+                break;
+            }
+        }
+
+        if (allDestroyed)
         {
             LowerBridge();
         }
@@ -58,6 +68,7 @@ public class ObjectSpawner : MonoBehaviour
     // Method to open the door
     void LowerBridge()
     {
+        Debug.Log("LowerBridge called");
         loweredBridge.SetActive(true);
         raisedBridge.SetActive(false);
         barrier.SetActive(false);
