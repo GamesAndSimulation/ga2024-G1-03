@@ -77,57 +77,60 @@ public class BossScript : MonoBehaviour
             StartCoroutine(StartPhaseTwo());
         }
 
-
-        if (!isDead)
+        if (!FindObjectOfType<PlayerCombat>().isDead)
         {
-            stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-            if (stunPlayer)
+            if (!isDead)
             {
-                stunPlayer = false;
-                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 30f));
-            }
+                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-            distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            direction = (player.position - transform.position).normalized;
-
-            if (!transitioning)
-            {       
-                Melee();
-                AbilitiesManager();
-                ComboManager();
-            }
-
-            move = new(0,0,0);
-
-            if (!isChasing && distanceToPlayer > startChaseDistance)
-            {
-                isChasing = true;
-            }
-            else if (isChasing && distanceToPlayer <= minimumChaseDistance)
-            {
-                isChasing = false;
-            }
-
-            if (canMove && (isChasing || isLeaping))
-            {
-
-                float speed = walkSpeed;
-
-                if (isLeaping)
+                if (stunPlayer)
                 {
-                    move = leapDirection;
-                }
-                else
-                {
-                    move = new Vector3(direction.x, 0, direction.z) * speed;
-                    gameObject.transform.forward = move;
+                    stunPlayer = false;
+                    StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 30f));
                 }
 
-                controller.Move(move * Time.deltaTime);
+                distanceToPlayer = Vector3.Distance(transform.position, player.position);
+                direction = (player.position - transform.position).normalized;
+
+                if (!transitioning)
+                {       
+                    Melee();
+                    AbilitiesManager();
+                    ComboManager();
+                }
+
+                move = new(0,0,0);
+
+                if (!isChasing && distanceToPlayer > startChaseDistance)
+                {
+                    isChasing = true;
+                }
+                else if (isChasing && distanceToPlayer <= minimumChaseDistance)
+                {
+                    isChasing = false;
+                }
+
+                if (canMove && (isChasing || isLeaping))
+                {
+
+                    float speed = walkSpeed;
+
+                    if (isLeaping)
+                    {
+                        move = leapDirection;
+                    }
+                    else
+                    {
+                        move = new Vector3(direction.x, 0, direction.z) * speed;
+                        gameObject.transform.forward = move;
+                    }
+
+                    controller.Move(move * Time.deltaTime);
+                }
+                animator.SetFloat("Speed", move.magnitude);
             }
-            animator.SetFloat("Speed", move.magnitude);
         }
+        
     }
 
     private IEnumerator SpinSwords()
