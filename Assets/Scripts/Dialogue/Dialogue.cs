@@ -35,6 +35,9 @@ public class dialogue : MonoBehaviour
     [SerializeField]
     private bool loopable;
 
+    [SerializeField]
+    private bool destroyable;
+
     private bool dialogueActivated;
 
     public bool dialogueFinished;
@@ -53,6 +56,9 @@ public class dialogue : MonoBehaviour
              step = 0;
              if(!loopable){
                  dialogueFinished = true;
+                 if(destroyable){
+                      Destroy(transform.parent.gameObject);
+                 }
              }
          }
          else
