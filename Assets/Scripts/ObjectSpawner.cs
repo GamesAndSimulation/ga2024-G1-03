@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
 {
-    public GameObject[] objectsToSpawn; // Array to hold the objects
-    public GameObject door; // The door object
+    public GameObject[] objectsToSpawn;
+    public GameObject raisedBridge;
+
+    public GameObject loweredBridge;
+
+    public GameObject barrier;
     private int objectsHit = 0;
     private dialogue dialogueScript;
 
@@ -11,22 +15,24 @@ public class ObjectSpawner : MonoBehaviour
     {
         dialogueScript = FindObjectOfType<dialogue>();
 
-        // Ensure all objects are initially disabled
+
         foreach (GameObject obj in objectsToSpawn)
         {
             obj.SetActive(false);
         }
 
-        // Initially close the door
-        door.SetActive(false);
+
+        loweredBridge.SetActive(false);
     }
 
     void Update()
     {
-        if (dialogueScript.spawn)
-        {
-            SpawnObjects();
-            dialogueScript.spawn = false; // Reset the flag to avoid repeated spawning
+        if(dialogueScript != null){
+            if (dialogueScript.spawn)
+            {
+                SpawnObjects();
+                Destroy(dialogueScript.gameObject);
+            }
         }
     }
 
@@ -45,13 +51,15 @@ public class ObjectSpawner : MonoBehaviour
         objectsHit++;
         if (objectsHit >= objectsToSpawn.Length)
         {
-            OpenDoor();
+            LowerBridge();
         }
     }
 
     // Method to open the door
-    void OpenDoor()
+    void LowerBridge()
     {
-        door.SetActive(true);
+        loweredBridge.SetActive(true);
+        raisedBridge.SetActive(false);
+        barrier.SetActive(false);
     }
 }
