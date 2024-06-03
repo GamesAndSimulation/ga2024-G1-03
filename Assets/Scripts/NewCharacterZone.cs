@@ -21,7 +21,7 @@ public class NewCharacterZone : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && pickupText.enabled && dialogueScript.dialogueFinished){
+        if (dialogueScript.dialogueFinished){
             charManager.UnlockCharacter(character, vfxTransform);
             Destroy(transform.parent.gameObject);
         }

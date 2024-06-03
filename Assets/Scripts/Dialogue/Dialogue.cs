@@ -56,9 +56,6 @@ public class dialogue : MonoBehaviour
              step = 0;
              if(!loopable){
                  dialogueFinished = true;
-                 if(destroyable){
-                      Destroy(transform.parent.gameObject);
-                 }
              }
          }
          else
