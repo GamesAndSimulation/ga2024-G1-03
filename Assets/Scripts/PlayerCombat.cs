@@ -28,62 +28,68 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     public Vector3 dwarfAtkDirection;
     public GameObject dwarf;
-    public GameObject hitbox;
     public bool dwarfAttack = false;
     public bool isAttacking = false;
     [SerializeField] private SoundGeneration soundGeneration;
     public AudioClip knightClip;
+    [SerializeField] private BossScript boss;
+    public BlinkScript blink;
+    public bool isDead = false;
 
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         movementScript = GetComponent<PlayerMovement>();
+        blink = GetComponent<BlinkScript>();
     }
 
     void Update()
     {
-
-        hpBar.fillAmount = health / 100;
-        staminaBar.fillAmount = stamina / 100;
-
-        stateInfo = animator.GetCurrentAnimatorStateInfo(1);
-        stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
-
-        if (Input.GetButton("Fire1"))
+        //for debug, remove later
+        if(Input.GetKeyDown(KeyCode.L))
         {
-            switch (charManager.current)
+            StartCoroutine(TakeDamage(10f));
+        }
+
+        if (!isDead)
+        {
+            hpBar.fillAmount = health/100;
+            staminaBar.fillAmount = stamina/100;
+
+            stateInfo = animator.GetCurrentAnimatorStateInfo(1);
+            stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
+
+            if (Input.GetButton("Fire1") && !movementScript.isStunned)
             {
-                case Characters.Knight:
-                    KnightAttack();
-                    break;
-                case Characters.Mage:
-                    MageAttack();
-                    break;
-                case Characters.Dwarf:
-                    DwarfAttack();
-                    break;
-                default:
-                    break;
+                switch (charManager.current)
+                {
+                    case Characters.Knight:
+                        KnightAttack();
+                        break;
+                    case Characters.Mage:
+                        MageAttack();
+                        break;
+                    case Characters.Dwarf:
+                        DwarfAttack();
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
+            if (stamina < 100){
+                stamina += 0.1f * Time.deltaTime * 60f;
+                if (stamina > 100) stamina = 100;
+                //stamina += 100f;
+            }
         }
-
-        if (stamina < 100)
-        {
-            stamina += 0.05f;
-            if (stamina > 100) stamina = 100;
-            //stamina += 100f;
-        }
+        
     }
 
     private void AttackStamina(float cost)
     {
         stamina -= cost;
-    }
-
-    public void TakeDamage(float dmg)
-    {
-        health -= dmg;
     }
 
     void KnightAttack()
@@ -92,6 +98,7 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("DaggerAttack") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(knightCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             knightClip = soundGeneration.GenerateAudio();
             isAttacking = true;
             AttackStamina(knightCost);
@@ -105,20 +112,12 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("SpellCast") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(mageCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             AttackStamina(mageCost);
-            animator.SetTrigger("Spell");
-            StartCoroutine(DelayedSpell());
+            animator.SetTrigger("Spell"); 
+            StartCoroutine(DelayedSpell());            
         }
-    }
-
-    void CreateHitbox()
-    {
-        Vector3 bulletTransform = new Vector3(transform.forward.x, 1, transform.forward.z);
-        GameObject instantiatedBullet =
-        Instantiate(hitbox, transform.position + bulletTransform, transform.rotation);
-
-        Destroy(instantiatedBullet, 0.5f);
     }
 
     IEnumerator DelayedSpell()
@@ -128,16 +127,14 @@ public class PlayerCombat : MonoBehaviour
         Destroy(newspell, 5);
         yield return new WaitForSeconds(0.15f);
         isAttacking = false;
-
     }
 
     IEnumerator DelayedSword()
     {
-        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y + 180);
+        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
 
         yield return new WaitForSeconds(0.3f);
-        CreateHitbox();
-        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward / 3), rotation);
+        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
         Destroy(vfx, 1.5f);
         yield return new WaitForSeconds(0.1f);
         isAttacking = false;
@@ -148,9 +145,10 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo2.IsName("DwarfAtk") && !animator2.IsInTransition(0) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(dwarfCost)) return;
+            if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             dwarfAttack = true;
-            dwarf.transform.SetParent(null);
+            //dwarf.transform.SetParent(null);
             AttackStamina(dwarfCost);
             animator2.SetTrigger("DwarfAtk");
             StartCoroutine(DelayedDwarf());
@@ -164,7 +162,7 @@ public class PlayerCombat : MonoBehaviour
         Destroy(vfx, 1.5f);
 
         yield return new WaitForSeconds(1.2f);
-        dwarf.transform.SetParent(movementScript.controller2.gameObject.transform);
+        //dwarf.transform.SetParent(movementScript.controller2.gameObject.transform);
         dwarfAttack = false;
         isAttacking = false;
     }
@@ -241,6 +239,41 @@ public class PlayerCombat : MonoBehaviour
         Color finalColor = image.color;
         finalColor.a = 0;
         image.color = finalColor;
+    }
+
+    public IEnumerator TakeDamage(float damage)
+    {
+        if(!movementScript.isRolling)
+        {
+            health -= damage;
+            if (health <= 0)
+            {
+                StartCoroutine(Die());
+            }
+            else
+            {
+                animator.SetTrigger("Hit");
+                animator2.SetTrigger("Hit");
+                movementScript.isStunned = true;
+                StartCoroutine(blink.FlashWhite(0.5f));
+                yield return new WaitForSeconds(0.2f);
+                movementScript.isStunned = false;
+            }
+        }
+    }
+
+    private IEnumerator Die()
+    {
+        hpBar.fillAmount = 0;
+        isDead = true;
+        animator.SetTrigger("Die");
+        animator2.SetTrigger("Die"); 
+        yield return new WaitForSeconds(0.2f);
+        FindObjectOfType<MainMenu>().hasStarted = false;
+        FindObjectOfType<DeathMenu>().deathMenuUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        StartCoroutine(FindObjectOfType<DeathMenu>().BloodImage());
     }
 
 }

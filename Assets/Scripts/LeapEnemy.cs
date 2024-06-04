@@ -9,7 +9,7 @@ public class LeapEnemy : MonoBehaviour
     //private float verticalVelocity;
     //private float gravityValue = 9.81f;
     public float walkSpeed = 3.0f; 
-    public float leapSpeed = 7.0f; 
+    private float leapSpeed; 
     public float leapInterval = 2.0f; 
     private float nextLeapTime = 2f;
     private Animator animator;
@@ -26,6 +26,8 @@ public class LeapEnemy : MonoBehaviour
     private Vector3 direction;
     public GameObject attackVFX;
     public Transform attackVFXPos;
+    private float gravityValue = 9.81f;
+    private float verticalVelocity;
 
     void Start()
     {
@@ -35,14 +37,14 @@ public class LeapEnemy : MonoBehaviour
 
     void Update()
     {
-        /*bool groundedPlayer = controller.isGrounded;
+        bool grounded = controller.isGrounded;
 
-        if (groundedPlayer && verticalVelocity < 0)
+        if (grounded && verticalVelocity < 0)
         {
             verticalVelocity = 0f;
         }
+        verticalVelocity -= gravityValue * Time.deltaTime;
 
-        verticalVelocity -= gravityValue * Time.deltaTime;*/
         distanceToPlayer = Vector3.Distance(transform.position, player.position);
         move = new(0,0,0);
         direction = (player.position - transform.position).normalized;
@@ -70,8 +72,8 @@ public class LeapEnemy : MonoBehaviour
                 move = new Vector3(direction.x, 0, direction.z) * speed;
                 gameObject.transform.forward = move;
             }
-
             
+            move.y = verticalVelocity;
             controller.Move(move * Time.deltaTime);
         }
         animator.SetFloat("speed", move.magnitude);
@@ -83,7 +85,7 @@ public class LeapEnemy : MonoBehaviour
         }
     }
 
-    IEnumerator Leap()
+    private IEnumerator Leap()
     {
         canMove = false;
         animator.SetTrigger("leap");
@@ -104,7 +106,7 @@ public class LeapEnemy : MonoBehaviour
         yield return new WaitForSeconds(leapDuration);
 
         GameObject vfx = Instantiate(attackVFX, attackVFXPos.position, Quaternion.Euler(0, 0, 0));
-        Destroy(vfx, 1.5f);
+        Destroy(vfx, 4f);
 
         isLeaping = false;
         canMove = false;

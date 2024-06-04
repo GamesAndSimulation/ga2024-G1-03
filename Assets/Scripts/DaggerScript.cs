@@ -28,13 +28,13 @@ public class DaggerScript : MonoBehaviour
         stateInfo = animator.GetCurrentAnimatorStateInfo(1);
         if (other.CompareTag("Enemy") && stateInfo.IsName("DaggerAttack" ))
         {
-            /*
-            Enemy enemy = other.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-            }*/
-            Debug.Log("enemy hit");
+            other.GetComponent<EnemyHealth>().TakeDamage(damage);
+        }
+
+        if (other.CompareTag("Boss") && stateInfo.IsName("DaggerAttack" ))
+        {
+            BossScript boss = other.GetComponent<BossScript>();
+            boss.TakeDamage(damage);
         }
     }
 }

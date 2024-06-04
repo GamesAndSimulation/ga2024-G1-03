@@ -68,11 +68,9 @@ public class Projectile : MonoBehaviour {
 			
 			if (trails.Count > 0) {
 				for (int i = 0; i < trails.Count; i++) {
-					trails [i].transform.parent = null;
-					var ps = trails[i].GetComponent<ParticleSystem> ();
-					if (ps != null) {
+					if (trails[i].TryGetComponent<ParticleSystem>(out var ps)) 
+					{
 						ps.Stop();
-						Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
 					}
 				}
 			}
@@ -95,12 +93,24 @@ public class Projectile : MonoBehaviour {
 					Destroy(hitVFX, ps.main.duration);
 			}
 
-			StartCoroutine(DestroyParticle (0f));
+			StartCoroutine(DestroyParticle(0f));
 		}
 
 		if (co.gameObject.CompareTag("Enemy"))
 		{
-			Debug.Log("enemy hit");
+			co.gameObject.GetComponent<EnemyHealth>().TakeDamage(damage);
+		}
+
+		if (co.gameObject.CompareTag("Boss"))
+        {
+            BossScript boss = co.gameObject.GetComponent<BossScript>();
+            boss.TakeDamage(damage);
+        }
+
+		if (co.gameObject.CompareTag("Player"))
+		{
+			FindObjectOfType<BossScript>().stunPlayer = true;
+
 		}
 	}
 
