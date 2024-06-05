@@ -3,16 +3,16 @@ using UnityEngine;
 public class DestroyableObject : MonoBehaviour
 {
     public ObjectSpawner objectSpawner;
-    private bool isDestroyed = false;
+    private bool hasBeenDestroyed = false;
 
     void OnDestroy()
     {
-        if (!isDestroyed && transform.parent == null)
+        Debug.Log("Object destroyed: " + gameObject.name);
+        if (transform.parent != null && transform.parent.CompareTag("Objectives"))
         {
-            isDestroyed = true;
             if (objectSpawner != null)
             {
-                objectSpawner.objectsDestroyed++;
+                objectSpawner.IncrementDestroyedObjectsCount();
             }
         }
     }

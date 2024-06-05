@@ -10,6 +10,7 @@ TagManager:
   - Shockwave
   - LoweredBridge
   - RaisedBridge
+  - Objectives
   layers:
   - Default
   - TransparentFX
