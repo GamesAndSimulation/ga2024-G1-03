@@ -9,6 +9,8 @@ public class ObjectSpawner : MonoBehaviour
     private GameObject loweredBridge;
     private dialogue dialogueScript;
     private int objectsToDestroy;
+    private GameObject RaisedBridge;
+    private GameObject LoweredBridge;
 
     void Start()
     {
