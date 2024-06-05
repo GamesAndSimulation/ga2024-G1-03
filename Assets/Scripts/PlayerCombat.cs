@@ -44,6 +44,7 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
+<<<<<<< HEAD
         //for debug, remove later
         if(Input.GetKeyDown(KeyCode.L))
         {
@@ -57,6 +58,9 @@ public class PlayerCombat : MonoBehaviour
         stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
 
         if (Input.GetButton("Fire1") && !movementScript.isStunned)
+=======
+        if (!isDead)
+>>>>>>> parent of 2ef63b8b (Revert "Merge branch 'Mansion-Level' into Forest-level")
         {
             switch (charManager.current)
             {
