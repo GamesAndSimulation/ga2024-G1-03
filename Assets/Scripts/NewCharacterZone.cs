@@ -12,8 +12,6 @@ public class NewCharacterZone : MonoBehaviour
     public Characters character;
     private bool inArea = false;
 
-    [SerializeField] private dialogue dialogueScript;
-
     void Start()
     {
         pickupText.enabled = false;
@@ -21,7 +19,11 @@ public class NewCharacterZone : MonoBehaviour
 
     void Update()
     {
+<<<<<<< HEAD
         if (dialogueScript.dialogueFinished){
+=======
+        if (Input.GetKeyDown(KeyCode.E) && pickupText.enabled){
+>>>>>>> parent of a6148b6b (Mansion Level finished)
             charManager.UnlockCharacter(character, vfxTransform);
             Destroy(transform.parent.gameObject);
         }
