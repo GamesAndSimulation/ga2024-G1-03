@@ -3,42 +3,73 @@ using UnityEngine;
 public class ObjectSpawner : MonoBehaviour
 {
     public GameObject[] objectsToSpawn;
-    public GameObject raisedBridge;
-
-    public GameObject loweredBridge;
-
     public GameObject barrier;
 
+    private GameObject raisedBridge;
+    private GameObject loweredBridge;
     private dialogue dialogueScript;
+    private int objectsToDestroy;
 
     void Start()
     {
-        dialogueScript = FindObjectOfType<dialogue>();
-
-
-        foreach (GameObject obj in objectsToSpawn)
-        {
-            obj.SetActive(false);
-        }
-
-
-        loweredBridge.SetActive(false);
+        InitializeComponents();
+        InitializeBridgeAndBarrierStates();
+        SetObjectsToSpawnInactive();
+        objectsToDestroy = objectsToSpawn.Length; // Initialize the counter
     }
 
     void Update()
     {
-        if(dialogueScript != null)
-        {
-            if (dialogueScript.spawn)
-            {
-                SpawnObjects();
-                Destroy(dialogueScript.gameObject);
-            }
-        }
-        CheckObjectsDestroyed();
+        HandleDialogueScript();
+        CheckIfAllObjectsDestroyed();
     }
 
-    // Method to spawn the objects
+    
+    void InitializeComponents()
+    {
+        dialogueScript = FindObjectOfType<dialogue>();
+
+        raisedBridge = GameObject.Find("RaisedBridge");
+        loweredBridge = GameObject.Find("LoweredBridge");
+    }
+
+    
+    void InitializeBridgeAndBarrierStates()
+    {
+        if (raisedBridge != null)
+        {
+            raisedBridge.SetActive(true);
+        }
+        if (loweredBridge != null)
+        {
+            loweredBridge.SetActive(false);
+        }
+        if (barrier != null)
+        {
+            barrier.SetActive(true);
+        }
+    }
+
+    
+    void SetObjectsToSpawnInactive()
+    {
+        foreach (GameObject obj in objectsToSpawn)
+        {
+            obj.SetActive(false);
+        }
+    }
+
+    
+    void HandleDialogueScript()
+    {
+        if (dialogueScript != null && dialogueScript.spawn)
+        {
+            SpawnObjects();
+            Destroy(dialogueScript.gameObject);
+        }
+    }
+
+    
     void SpawnObjects()
     {
         foreach (GameObject obj in objectsToSpawn)
@@ -47,30 +78,40 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
-    void CheckObjectsDestroyed()
+   
+    void CheckIfAllObjectsDestroyed()
     {
-        bool allDestroyed = true;
+        int activeObjectsCount = 0;
         foreach (GameObject obj in objectsToSpawn)
         {
             if (obj != null && obj.activeInHierarchy)
             {
-                allDestroyed = false;
-                break;
+                activeObjectsCount++;
             }
         }
 
-        if (allDestroyed)
+       
+        if (activeObjectsCount == 0 && objectsToDestroy > 0)
         {
+            objectsToDestroy = 0; 
             LowerBridge();
         }
     }
 
-    // Method to open the door
     void LowerBridge()
     {
         Debug.Log("LowerBridge called");
-        loweredBridge.SetActive(true);
-        raisedBridge.SetActive(false);
-        barrier.SetActive(false);
+        if (loweredBridge != null)
+        {
+            loweredBridge.SetActive(true);
+        }
+        if (raisedBridge != null)
+        {
+            raisedBridge.SetActive(false);
+        }
+        if (barrier != null)
+        {
+            barrier.SetActive(false);
+        }
     }
 }
