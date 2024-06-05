@@ -34,6 +34,7 @@ public class PlayerCombat : MonoBehaviour
     public AudioClip knightClip;
     [SerializeField] private BossScript boss;
     public BlinkScript blink;
+    public bool isDead = false;
 
     void Start()
     {
@@ -44,46 +45,39 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        //for debug, remove later
-        if(Input.GetKeyDown(KeyCode.L))
+        if (!isDead)
         {
-            StartCoroutine(TakeDamage(10f));
-        }
+            hpBar.fillAmount = health/100;
+            staminaBar.fillAmount = stamina/100;
 
-        hpBar.fillAmount = health/100;
-        staminaBar.fillAmount = stamina/100;
+            stateInfo = animator.GetCurrentAnimatorStateInfo(1);
+            stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
 
-        stateInfo = animator.GetCurrentAnimatorStateInfo(1);
-        stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
-
-        if (Input.GetButton("Fire1") && !movementScript.isStunned)
-        {
-            switch (charManager.current)
+            if (Input.GetButton("Fire1") && !movementScript.isStunned)
             {
-                case Characters.Knight:
-                    KnightAttack();
-                    break;
-                case Characters.Mage:
-                    MageAttack();
-                    break;
-                case Characters.Dwarf:
-                    DwarfAttack();
-                    break;
-                default:
-                    break;
+                switch (charManager.current)
+                {
+                    case Characters.Knight:
+                        KnightAttack();
+                        break;
+                    case Characters.Mage:
+                        MageAttack();
+                        break;
+                    case Characters.Dwarf:
+                        DwarfAttack();
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
+            if (stamina < 100){
+                stamina += 0.1f * Time.deltaTime * 60f;
+                if (stamina > 100) stamina = 100;
+                //stamina += 100f;
+            }
         }
-
-        if (stamina < 100){
-            stamina += 0.1f;
-            if (stamina > 100) stamina = 100;
-            //stamina += 100f;
-        }
-    }
-
-    void FixedUpdate()
-    {
         
     }
 
@@ -246,15 +240,34 @@ public class PlayerCombat : MonoBehaviour
         if(!movementScript.isRolling)
         {
             health -= damage;
-            animator.SetTrigger("Hit");
-            animator2.SetTrigger("Hit");
-            movementScript.isStunned = true;
-            StartCoroutine(blink.FlashWhite(0.5f));
-            yield return new WaitForSeconds(0.2f);
-            movementScript.isStunned = false;
+            if (health <= 0)
+            {
+                StartCoroutine(Die());
+            }
+            else
+            {
+                animator.SetTrigger("Hit");
+                animator2.SetTrigger("Hit");
+                movementScript.isStunned = true;
+                StartCoroutine(blink.FlashWhite(0.5f));
+                yield return new WaitForSeconds(0.2f);
+                movementScript.isStunned = false;
+            }
         }
-
     }
 
+    private IEnumerator Die()
+    {
+        hpBar.fillAmount = 0;
+        isDead = true;
+        animator.SetTrigger("Die");
+        animator2.SetTrigger("Die"); 
+        yield return new WaitForSeconds(0.2f);
+        FindObjectOfType<MainMenu>().hasStarted = false;
+        FindObjectOfType<DeathMenu>().deathMenuUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        StartCoroutine(FindObjectOfType<DeathMenu>().BloodImage());
+    }
 
 }

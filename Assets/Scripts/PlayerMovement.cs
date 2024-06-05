@@ -34,106 +34,110 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        bool groundedPlayer = controller.isGrounded;
-        bool groundedDwarf = controller2.isGrounded;
-
-        //slam into the ground
-        if (dwarf.activeInHierarchy)
+        if (!playerCombat.isDead)
         {
-            if (groundedDwarf && verticalVelocity < 0)
+            bool groundedPlayer = controller.isGrounded;
+            bool groundedDwarf = controller2.isGrounded;
+
+            //slam into the ground
+            if (dwarf.activeInHierarchy)
             {
-                verticalVelocity = 0f;
-            }
-        }
-        else
-        {
-            if (groundedPlayer && verticalVelocity < 0)
-            {
-                verticalVelocity = 0f;
-            }
-        }
-        
-        //apply gravity
-        verticalVelocity -= gravityValue * Time.deltaTime;
-
-        ClickRoll();
-
-        if (!cameraManager.isFreeCameraActive && !isStunned){
-
-            if (!isRolling && !playerCombat.dwarfAttack)
-            {
-                move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                if (move.magnitude > 1)
+                if (groundedDwarf && verticalVelocity < 0)
                 {
-                    move.Normalize(); //normalize the move vector to ensure consistent speed
-                }
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    float speed;
-                    speed = dwarf.activeInHierarchy ? runSpeed - 0.5f : runSpeed;
-                    move *= speed;
-                }
-                else
-                {
-                    float speed;
-                    speed = dwarf.activeInHierarchy ? walkSpeed - 0.5f : walkSpeed;
-                    move *= speed;
-                }
-                animator.SetFloat("Speed", move.magnitude);
-                animator2.SetFloat("Speed", move.magnitude);
-
-                //only align to motion if we are providing enough input
-                if (move.magnitude > 0f)
-                {
-                    gameObject.transform.forward = move;
-                    controller2.gameObject.transform.forward = move;
+                    verticalVelocity = 0f;
                 }
             }
             else
             {
-                animator2.SetFloat("Speed", 0f);
+                if (groundedPlayer && verticalVelocity < 0)
+                {
+                    verticalVelocity = 0f;
+                }
+            }
+        
+            //apply gravity
+            verticalVelocity -= gravityValue * Time.deltaTime;
 
+            ClickRoll();
+
+            if (!cameraManager.isFreeCameraActive && !isStunned){
+
+                if (!isRolling && !playerCombat.dwarfAttack)
+                {
+                    move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                    if (move.magnitude > 1)
+                    {
+                        move.Normalize(); //normalize the move vector to ensure consistent speed
+                    }
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        float speed;
+                        speed = dwarf.activeInHierarchy ? runSpeed - 0.5f : runSpeed;
+                        move *= speed;
+                    }
+                    else
+                    {
+                        float speed;
+                        speed = dwarf.activeInHierarchy ? walkSpeed - 0.5f : walkSpeed;
+                        move *= speed;
+                    }
+                    animator.SetFloat("Speed", move.magnitude);
+                    animator2.SetFloat("Speed", move.magnitude);
+
+                    //only align to motion if we are providing enough input
+                    if (move.magnitude > 0f)
+                    {
+                        gameObject.transform.forward = move;
+                        controller2.gameObject.transform.forward = move;
+                    }
+                }
+                else
+                {
+                    animator2.SetFloat("Speed", 0f);
+
+                    if (isRolling)
+                    {
+                        Roll();
+                        move = rollSpeedMultiplier * storedSpeed * rollDirection;
+                    }
+                }
+
+                move.y = verticalVelocity;
+                
+                if (dwarf.activeInHierarchy)
+                {
+                    //if dwarf is active and not attacking move dwarf controller and copy the movement for the other one for consistency when switching character
+                    if (!playerCombat.dwarfAttack) 
+                    {
+                        controller2.Move(move * Time.deltaTime);
+                        controller.gameObject.transform.position = controller2.transform.position;
+                    } 
+                } 
+                else 
+                { // opposite of the above
+                    controller.Move(move * Time.deltaTime);
+                    controller2.gameObject.transform.position = controller.transform.position;
+                }
+            } 
+            else 
+            {
+                //to allow rolling while free camera is active
                 if (isRolling)
                 {
                     Roll();
+                    animator2.SetFloat("Speed", 0f);
                     move = rollSpeedMultiplier * storedSpeed * rollDirection;
                 }
             }
 
-            move.y = verticalVelocity;
-            
-            if (dwarf.activeInHierarchy)
+            //if dwarf is attacking Move() is not used and the character controller follows the attack animation instead
+            if (playerCombat.dwarfAttack) 
             {
-                //if dwarf is active and not attacking move dwarf controller and copy the movement for the other one for consistency when switching character
-                if (!playerCombat.dwarfAttack) 
-                {
-                    controller2.Move(move * Time.deltaTime);
-                    controller.gameObject.transform.position = controller2.transform.position;
-                } 
-            } 
-            else 
-            { // opposite of the above
-                controller.Move(move * Time.deltaTime);
-                controller2.gameObject.transform.position = controller.transform.position;
-            }
-        } 
-        else 
-        {
-            //to allow rolling while free camera is active
-            if (isRolling)
-            {
-                Roll();
-                animator2.SetFloat("Speed", 0f);
-                move = rollSpeedMultiplier * storedSpeed * rollDirection;
+                controller.gameObject.transform.position = controller2.transform.position;
+                controller2.gameObject.transform.position = dwarf.transform.position;
             }
         }
-
-        //if dwarf is attacking Move() is not used and the character controller follows the attack animation instead
-        if (playerCombat.dwarfAttack) 
-        {
-            controller.gameObject.transform.position = controller2.transform.position;
-            controller2.gameObject.transform.position = dwarf.transform.position;
-        }
+        
     }
 
     void ClickRoll()

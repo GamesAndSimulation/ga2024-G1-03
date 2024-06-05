@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
-using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using Image = UnityEngine.UI.Image;
@@ -20,8 +16,9 @@ public class CharacterManager : MonoBehaviour
     private float switchCost = 10f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
-    public Characters current;  
+    public Characters current;
 
+    public PlayerCombat combatScript;
     public List<GameObject> attacks;
     public List<GameObject> models;
     public GameObject helmet;
@@ -48,18 +45,20 @@ public class CharacterManager : MonoBehaviour
 
     void Update()
     {
-        //can switch character only if its not in the middle of an attack
-        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
-            if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3)) {
+        if (!playerCombat.isDead)
+        {
+            //can switch character only if its not in the middle of an attack
+            if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
+                if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
+                if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                    if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3)) {
 
-                if (unlockedCharacters.Count > 2) SwitchCharacter(unlockedCharacters[2]); 
+                    if (unlockedCharacters.Count > 2) SwitchCharacter(unlockedCharacters[2]); 
+                }
             }
         }
-    
     }
 
     public void SwitchCharacter(Characters character)
@@ -126,6 +125,17 @@ public class CharacterManager : MonoBehaviour
         return isSpaceAvailable;
     }
 
+    void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            StartCoroutine(combatScript.TakeDamage(10));
+        }
+        if (collision.gameObject.CompareTag("Shockwave"))
+        {
+            StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 35));
+        }
+    }
 
 
 }
