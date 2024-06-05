@@ -129,7 +129,11 @@ public class CharacterManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            combatScript.TakeDamage(10);
+            StartCoroutine(combatScript.TakeDamage(10));
+        }
+        if (collision.gameObject.CompareTag("Shockwave"))
+        {
+            StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 35));
         }
     }
 

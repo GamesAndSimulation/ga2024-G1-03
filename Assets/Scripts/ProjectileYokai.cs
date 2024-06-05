@@ -95,23 +95,6 @@ public class ProjectileYokai : MonoBehaviour {
 
 			StartCoroutine(DestroyParticle(0f));
 		}
-
-		if (co.gameObject.CompareTag("Enemy"))
-		{
-			co.gameObject.GetComponent<EnemyHealth>().TakeDamage(damage);
-		}
-
-		if (co.gameObject.CompareTag("Boss"))
-        {
-            BossScript boss = co.gameObject.GetComponent<BossScript>();
-            boss.TakeDamage(damage);
-        }
-
-		if (co.gameObject.CompareTag("Player"))
-		{
-			FindObjectOfType<PlayerCombat>().TakeDamage(damage);
-
-		}
 	}
 
 	public IEnumerator DestroyParticle(float waitTime) 

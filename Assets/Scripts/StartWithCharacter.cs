@@ -13,6 +13,9 @@ public class StartWithCharacter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        print(charManager);
+        print(character);
+        print(vfxTransform);
         charManager.UnlockCharacter(character, vfxTransform);
     }
 
