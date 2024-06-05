@@ -45,12 +45,6 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        //for debug, remove later
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            StartCoroutine(TakeDamage(10f));
-        }
-
         if (!isDead)
         {
             hpBar.fillAmount = health/100;
