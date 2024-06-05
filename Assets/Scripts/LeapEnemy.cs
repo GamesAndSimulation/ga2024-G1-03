@@ -106,7 +106,7 @@ public class LeapEnemy : MonoBehaviour
         yield return new WaitForSeconds(leapDuration);
 
         GameObject vfx = Instantiate(attackVFX, attackVFXPos.position, Quaternion.Euler(0, 0, 0));
-        Destroy(vfx, 4f);
+        Destroy(vfx, 1f);
 
         isLeaping = false;
         canMove = false;

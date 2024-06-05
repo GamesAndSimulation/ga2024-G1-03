@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class TriggerMove: MonoBehaviour
 {
     public GameObject[] move;
     public Vector3[] newPosition;
+    public string triggerTag;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +19,7 @@ public class TriggerMove: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.tag.Equals(triggerTag))
         {
             for (int i = 0; i < move.Length; i++)
             {
@@ -33,8 +30,9 @@ public class TriggerMove: MonoBehaviour
                     current.transform.position = newPosition[i];
                 }
             }
+
+            Destroy(this);
         }
-        Destroy(this);
     }
 
  }

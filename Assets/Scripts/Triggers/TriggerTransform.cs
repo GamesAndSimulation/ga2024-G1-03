@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class TriggerTransform: MonoBehaviour
 {
     public GameObject[] delete;
     public GameObject[] move;
+    public string triggerTag;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +19,7 @@ public class TriggerTransform: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.tag.Equals(triggerTag))
         {
             for (int i = 0; i < delete.Length; i++)
             {
@@ -34,8 +31,9 @@ public class TriggerTransform: MonoBehaviour
                 }
                 Destroy(current);
             }
+            Destroy(this);
         }
-        Destroy(this);
+        
     }
 
  }
