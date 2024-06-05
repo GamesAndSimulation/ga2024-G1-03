@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DestroyableObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public ObjectSpawner objectSpawner;
+    private bool isDestroyed = false;
 
-    // Update is called once per frame
-    void Update()
+    void OnDestroy()
     {
-        
+        if (!isDestroyed && transform.parent == null)
+        {
+            isDestroyed = true;
+            if (objectSpawner != null)
+            {
+                objectSpawner.objectsDestroyed++;
+            }
+        }
     }
 }

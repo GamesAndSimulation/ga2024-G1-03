@@ -6,11 +6,11 @@ public class ObjectSpawner : MonoBehaviour
     public GameObject barrier;
     public int objectsDestroyed = 0; // Public counter
 
-    private Dialogue dialogueScript;
+    private dialogue dialogueScript;
 
     void Start()
     {
-        dialogueScript = FindObjectOfType<Dialogue>();
+        dialogueScript = FindObjectOfType<dialogue>();
         InitializeObjects();
     }
 

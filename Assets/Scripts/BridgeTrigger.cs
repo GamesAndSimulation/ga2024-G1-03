@@ -1,18 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BridgeTrigger : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int requiredDestroyedObjects = 0; // The number of objects that need to be destroyed
+    public GameObject raisedBridge;
+    public GameObject loweredBridge;
+    public GameObject barrier;
+    public ObjectSpawner objectSpawner;
+
+    void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player") && objectSpawner.objectsDestroyed >= requiredDestroyedObjects)
+        {
+            LowerBridge();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void LowerBridge()
     {
-        
+        if (raisedBridge != null)
+        {
+            raisedBridge.SetActive(false);
+        }
+        if (loweredBridge != null)
+        {
+            loweredBridge.SetActive(true);
+        }
+        if (barrier != null)
+        {
+            barrier.SetActive(false);
+        }
     }
 }
