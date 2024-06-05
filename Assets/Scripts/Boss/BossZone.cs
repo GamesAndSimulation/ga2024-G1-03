@@ -7,13 +7,11 @@ public class BossZone : MonoBehaviour
     public GameObject boss;
     public GameObject bossUI;
     private bool done = false;
-    private AudioSource audioSource;
+    //private bool dialogDone = false;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        audioSource.enabled = false;
-        PreloadResources();
+        
     }
 
     void Update()
@@ -26,31 +24,12 @@ public class BossZone : MonoBehaviour
         if (other.CompareTag("Player") && !done)
         {
             // Dialog();
-            EnableBoss();
+            GetComponent<AudioSource>().Play();
+            GetComponent<Animator>().SetTrigger("Close");
+            boss.GetComponent<CharacterController>().enabled = true;
+            boss.GetComponent<BossScript>().enabled = true;
+            bossUI.SetActive(true);
             done = true;
         }
-    }
-
-    void PreloadResources()
-    {
-        if (audioSource.clip.loadState != AudioDataLoadState.Loaded)
-        {
-            audioSource.clip.LoadAudioData();
-        }
-    }
-
-    void EnableBoss()
-    {
-        audioSource.enabled = true;
-        GetComponent<Animator>().SetTrigger("Close");
-        StartCoroutine(EnableBossComponents());
-    }
-
-    IEnumerator EnableBossComponents()
-    {
-        yield return new WaitForSeconds(0.1f);
-        boss.GetComponent<CharacterController>().enabled = true;
-        boss.GetComponent<BossScript>().enabled = true;
-        bossUI.SetActive(true);
     }
 }

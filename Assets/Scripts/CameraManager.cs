@@ -7,17 +7,21 @@ public class CameraManager : MonoBehaviour
     public GameObject freeCamera;
     public bool isFreeCameraActive = false;
     [SerializeField] private PlayerMovement playerMovement;
-
+    [SerializeField] private PlayerCombat playerCombat;
     private bool isPaused = false;
 
     void Start()
     {
         freeCamera.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U)) 
+       // if (isFreeCameraActive) playerMovement.move = new Vector3(0, 0, 0);
+        //Debug.Log(playerMovement.move);
+        if (Input.GetKeyDown(KeyCode.U) /*&& !playerMovement.isRolling && !playerCombat.dwarfAttack*/) 
         {
             isFreeCameraActive = !isFreeCameraActive;
 

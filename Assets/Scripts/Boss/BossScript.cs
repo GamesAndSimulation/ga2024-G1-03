@@ -37,7 +37,7 @@ public class BossScript : MonoBehaviour
     [SerializeField] private GameObject fireball;
     [SerializeField] private AudioSource fireballAudio;
     [SerializeField] private GameObject jumpTrigger;
-    private float abilityCooldown = 40f;
+    private float abilityCooldown = 50f;
     private float lastAbilityTime = 0f;
     private float comboCooldown = 15f;
     private float lastComboTime = 0f;
@@ -77,60 +77,57 @@ public class BossScript : MonoBehaviour
             StartCoroutine(StartPhaseTwo());
         }
 
-        if (!FindObjectOfType<PlayerCombat>().isDead)
+
+        if (!isDead)
         {
-            if (!isDead)
+            stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (stunPlayer)
             {
-                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-                if (stunPlayer)
-                {
-                    stunPlayer = false;
-                    StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 30f));
-                }
-
-                distanceToPlayer = Vector3.Distance(transform.position, player.position);
-                direction = (player.position - transform.position).normalized;
-
-                if (!transitioning)
-                {       
-                    Melee();
-                    AbilitiesManager();
-                    ComboManager();
-                }
-
-                move = new(0,0,0);
-
-                if (!isChasing && distanceToPlayer > startChaseDistance)
-                {
-                    isChasing = true;
-                }
-                else if (isChasing && distanceToPlayer <= minimumChaseDistance)
-                {
-                    isChasing = false;
-                }
-
-                if (canMove && (isChasing || isLeaping))
-                {
-
-                    float speed = walkSpeed;
-
-                    if (isLeaping)
-                    {
-                        move = leapDirection;
-                    }
-                    else
-                    {
-                        move = new Vector3(direction.x, 0, direction.z) * speed;
-                        gameObject.transform.forward = move;
-                    }
-
-                    controller.Move(move * Time.deltaTime);
-                }
-                animator.SetFloat("Speed", move.magnitude);
+                stunPlayer = false;
+                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 30f));
             }
+
+            distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            direction = (player.position - transform.position).normalized;
+
+            if (!transitioning)
+            {       
+                Melee();
+                AbilitiesManager();
+                ComboManager();
+            }
+
+            move = new(0,0,0);
+
+            if (!isChasing && distanceToPlayer > startChaseDistance)
+            {
+                isChasing = true;
+            }
+            else if (isChasing && distanceToPlayer <= minimumChaseDistance)
+            {
+                isChasing = false;
+            }
+
+            if (canMove && (isChasing || isLeaping))
+            {
+
+                float speed = walkSpeed;
+
+                if (isLeaping)
+                {
+                    move = leapDirection;
+                }
+                else
+                {
+                    move = new Vector3(direction.x, 0, direction.z) * speed;
+                    gameObject.transform.forward = move;
+                }
+
+                controller.Move(move * Time.deltaTime);
+            }
+            animator.SetFloat("Speed", move.magnitude);
         }
-        
     }
 
     private IEnumerator SpinSwords()
@@ -289,9 +286,9 @@ public class BossScript : MonoBehaviour
         StartCoroutine(DelayedSword(true));
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(DelayedSword(false));
-        yield return new WaitForSeconds(1f);
-
-        //yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(DelayedSword(true));
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine(DelayedSword(false));
         yield return new WaitForSeconds(2f);
 
@@ -309,7 +306,7 @@ public class BossScript : MonoBehaviour
 
         StartCoroutine(DelayedSword(false));
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(DelayedSword(true));          
+        StartCoroutine(DelayedSword(true));           //mudar o damage do ultimo hit para mais
         yield return new WaitForSeconds(1.5f);
         jumpTrigger.SetActive(true);
         StartCoroutine(DelayedSword(false));

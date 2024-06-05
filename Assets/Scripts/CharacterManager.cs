@@ -48,20 +48,18 @@ public class CharacterManager : MonoBehaviour
 
     void Update()
     {
-        if (!playerCombat.isDead)
-        {
-            //can switch character only if its not in the middle of an attack
-            if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
-                if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
-                if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                    if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
-                }
-                if (Input.GetKeyDown(KeyCode.Alpha3)) {
+        //can switch character only if its not in the middle of an attack
+        if (playerCombat.stateInfo.IsName("Default") && !playerCombat.stateInfo2.IsName("DwarfAtk") && !playerCombat.animator.IsInTransition(1) /*&& !playerCombat.animator2.IsInTransition(0)*/){
+            if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCharacter(unlockedCharacters[0]);
+            if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                if (unlockedCharacters.Count > 1) SwitchCharacter(unlockedCharacters[1]);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3)) {
 
-                    if (unlockedCharacters.Count > 2) SwitchCharacter(unlockedCharacters[2]); 
-                }
+                if (unlockedCharacters.Count > 2) SwitchCharacter(unlockedCharacters[2]); 
             }
         }
+    
     }
 
     public void SwitchCharacter(Characters character)
