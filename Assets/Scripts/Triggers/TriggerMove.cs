@@ -19,7 +19,7 @@ public class TriggerMove: MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag.Equals("Player"))
+        if (collision.gameObject.tag.Equals("Player") || collision.gameObject.tag.Equals("Magic"))
         {
             for (int i = 0; i < move.Length; i++)
             {
