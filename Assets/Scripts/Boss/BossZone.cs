@@ -14,9 +14,6 @@ public class BossZone : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         audioSource.enabled = false;
         PreloadResources();
-
-        EnableBoss();
-        done = true;
     }
 
     void Update()
@@ -24,7 +21,15 @@ public class BossZone : MonoBehaviour
         
     }
 
-
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !done)
+        {
+            // Dialog();
+            EnableBoss();
+            done = true;
+        }
+    }
 
     void PreloadResources()
     {
@@ -37,6 +42,7 @@ public class BossZone : MonoBehaviour
     void EnableBoss()
     {
         audioSource.enabled = true;
+        GetComponent<Animator>().SetTrigger("Close");
         StartCoroutine(EnableBossComponents());
     }
 

@@ -6,9 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Bullet
-  - Magic
   - Boss
-  - Shockwave
   layers:
   - Default
   - TransparentFX
