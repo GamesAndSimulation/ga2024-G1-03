@@ -128,16 +128,6 @@ public class CharacterManager : MonoBehaviour
         return isSpaceAvailable;
     }
 
-<<<<<<< HEAD
-=======
-    void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            combatScript.TakeDamage(10);
-        }
-    }
->>>>>>> parent of a6148b6b (Mansion Level finished)
 
 
 }

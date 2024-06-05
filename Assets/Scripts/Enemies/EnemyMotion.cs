@@ -13,10 +13,6 @@ public class EnemyMotion : MonoBehaviour
 
     void Start()
     {
-<<<<<<< HEAD:Assets/Scripts/Enemies/EnemyMotion.cs
-=======
-        gameObject.SetActive(false);
->>>>>>> parent of a6148b6b (Mansion Level finished):Assets/Scripts/EnemyMotion.cs
         speed = speed / 10;
         InvokeRepeating("ChangeDirection", 0, 0.1f);
         player = GameObject.FindGameObjectWithTag("Player");
