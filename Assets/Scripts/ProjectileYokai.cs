@@ -84,7 +84,6 @@ public class ProjectileYokai : MonoBehaviour {
 
 			if (hitPrefab != null) {
 				var hitVFX = Instantiate(hitPrefab, pos, rot);
-				hitVFX.GetComponent<AudioSource>().PlayOneShot(hitSFX);
 				var ps = hitVFX.GetComponent<ParticleSystem>();
 				if (ps == null) {
 					var psChild = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
