@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
-using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using Image = UnityEngine.UI.Image;
@@ -20,8 +16,9 @@ public class CharacterManager : MonoBehaviour
     private float switchCost = 10f;
     private const int AmountCharacters = 3;
     private List<Characters> unlockedCharacters;
-    public Characters current;  
+    public Characters current;
 
+    public PlayerCombat combatScript;
     public List<GameObject> attacks;
     public List<GameObject> models;
     public GameObject helmet;
@@ -128,6 +125,17 @@ public class CharacterManager : MonoBehaviour
         return isSpaceAvailable;
     }
 
+    void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            StartCoroutine(combatScript.TakeDamage(10));
+        }
+        if (collision.gameObject.CompareTag("Shockwave"))
+        {
+            StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, 35));
+        }
+    }
 
 
 }

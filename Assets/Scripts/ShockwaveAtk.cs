@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShockwaveAtk : MonoBehaviour
 {
-    public int damage = 30; 
+    public int damage; 
     private float growthRate = 7f; 
     private float maxRadius = 2.5f;
     private SphereCollider shockwaveCollider;
@@ -44,13 +44,6 @@ public class ShockwaveAtk : MonoBehaviour
             {
                 BossScript boss = other.GetComponent<BossScript>();
                 boss.TakeDamage(damage);
-            }
-        }
-        else
-        {
-            if (other.CompareTag("Player"))
-            {
-                StartCoroutine(FindObjectOfType<PlayerMovement>().Stun(3f, damage));
             }
         }
     }

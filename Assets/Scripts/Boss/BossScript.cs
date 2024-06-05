@@ -65,13 +65,6 @@ public class BossScript : MonoBehaviour
 
     void Update()
     {
-        //for debug, remove later before delivering
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            //StartCoroutine(JumpCombo());
-            TakeDamage(50f);
-           //StartCoroutine( Die());
-        }
         if(Input.GetKeyDown(KeyCode.M))
         {
             StartCoroutine(StartPhaseTwo());
