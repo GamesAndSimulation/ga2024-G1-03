@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level_01_The_Forest.unity
     guid: 5d23565024f7b425eb87c73db48004aa
+  - enabled: 1
+    path: Assets/Scenes/Mansion.unity
+    guid: b443aa02171392641a3d2f6371f59568
+  - enabled: 1
+    path: Assets/Scenes/FinalBoss.unity
+    guid: 59325b3644809ad44baa20054ad9348a
   m_configObjects: {}
