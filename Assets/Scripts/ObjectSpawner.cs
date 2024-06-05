@@ -4,64 +4,33 @@ public class ObjectSpawner : MonoBehaviour
 {
     public GameObject[] objectsToSpawn;
     public GameObject barrier;
+    public int objectsDestroyed = 0; // Public counter
 
-    private GameObject raisedBridge;
-    private GameObject loweredBridge;
-    private dialogue dialogueScript;
-    private int objectsToDestroy;
-    private GameObject RaisedBridge;
-    private GameObject LoweredBridge;
+    private Dialogue dialogueScript;
 
     void Start()
     {
-        InitializeComponents();
-        InitializeBridgeAndBarrierStates();
-        SetObjectsToSpawnInactive();
-        objectsToDestroy = objectsToSpawn.Length; // Initialize the counter
+        dialogueScript = FindObjectOfType<Dialogue>();
+        InitializeObjects();
     }
 
     void Update()
     {
         HandleDialogueScript();
-        CheckIfAllObjectsDestroyed();
     }
 
-    
-    void InitializeComponents()
+    void InitializeObjects()
     {
-        dialogueScript = FindObjectOfType<dialogue>();
-
-        raisedBridge = GameObject.Find("RaisedBridge");
-        loweredBridge = GameObject.Find("LoweredBridge");
-    }
-
-    
-    void InitializeBridgeAndBarrierStates()
-    {
-        if (raisedBridge != null)
-        {
-            raisedBridge.SetActive(true);
-        }
-        if (loweredBridge != null)
-        {
-            loweredBridge.SetActive(false);
-        }
         if (barrier != null)
         {
             barrier.SetActive(true);
         }
-    }
-
-    
-    void SetObjectsToSpawnInactive()
-    {
         foreach (GameObject obj in objectsToSpawn)
         {
             obj.SetActive(false);
         }
     }
 
-    
     void HandleDialogueScript()
     {
         if (dialogueScript != null && dialogueScript.spawn)
@@ -71,49 +40,12 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
-    
     void SpawnObjects()
     {
         foreach (GameObject obj in objectsToSpawn)
         {
             obj.SetActive(true);
-        }
-    }
-
-   
-    void CheckIfAllObjectsDestroyed()
-    {
-        int activeObjectsCount = 0;
-        foreach (GameObject obj in objectsToSpawn)
-        {
-            if (obj != null && obj.activeInHierarchy)
-            {
-                activeObjectsCount++;
-            }
-        }
-
-       
-        if (activeObjectsCount == 0 && objectsToDestroy > 0)
-        {
-            objectsToDestroy = 0; 
-            LowerBridge();
-        }
-    }
-
-    void LowerBridge()
-    {
-        Debug.Log("LowerBridge called");
-        if (loweredBridge != null)
-        {
-            loweredBridge.SetActive(true);
-        }
-        if (raisedBridge != null)
-        {
-            raisedBridge.SetActive(false);
-        }
-        if (barrier != null)
-        {
-            barrier.SetActive(false);
+            obj.AddComponent<DestroyableObject>().objectSpawner = this; // Attach DestroyableObject script
         }
     }
 }
