@@ -19,6 +19,11 @@ public class ObjectSpawner : MonoBehaviour
         HandleDialogueScript();
     }
 
+     public void IncrementDestroyedObjectsCount()
+    {
+        objectsDestroyed++;
+    }
+
     void InitializeObjects()
     {
         if (barrier != null)
