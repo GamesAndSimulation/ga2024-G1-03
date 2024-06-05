@@ -44,23 +44,7 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-<<<<<<< HEAD
-        //for debug, remove later
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            StartCoroutine(TakeDamage(10f));
-        }
-
-        hpBar.fillAmount = health/100;
-        staminaBar.fillAmount = stamina/100;
-
-        stateInfo = animator.GetCurrentAnimatorStateInfo(1);
-        stateInfo2 = animator2.GetCurrentAnimatorStateInfo(0);
-
-        if (Input.GetButton("Fire1") && !movementScript.isStunned)
-=======
         if (!isDead)
->>>>>>> parent of 2ef63b8b (Revert "Merge branch 'Mansion-Level' into Forest-level")
         {
             switch (charManager.current)
             {
@@ -79,7 +63,8 @@ public class PlayerCombat : MonoBehaviour
 
         }
 
-        if (stamina < 100){
+        if (stamina < 100)
+        {
             stamina += 0.1f;
             if (stamina > 100) stamina = 100;
             //stamina += 100f;
@@ -88,7 +73,7 @@ public class PlayerCombat : MonoBehaviour
 
     void FixedUpdate()
     {
-        
+
     }
 
     private void AttackStamina(float cost)
@@ -119,8 +104,8 @@ public class PlayerCombat : MonoBehaviour
             if (boss.enabled == true) boss.Dodge();
             isAttacking = true;
             AttackStamina(mageCost);
-            animator.SetTrigger("Spell"); 
-            StartCoroutine(DelayedSpell());            
+            animator.SetTrigger("Spell");
+            StartCoroutine(DelayedSpell());
         }
     }
 
@@ -135,10 +120,10 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator DelayedSword()
     {
-        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y+180);
+        Quaternion rotation = Quaternion.Euler(-45, 180, 10) * Quaternion.Euler(0, 0, transform.rotation.eulerAngles.y + 180);
 
         yield return new WaitForSeconds(0.3f);
-        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward/3), rotation);
+        GameObject vfx = Instantiate(swordVFX, swordVFXPosition.position + (transform.forward / 3), rotation);
         Destroy(vfx, 1.5f);
         yield return new WaitForSeconds(0.1f);
         isAttacking = false;
@@ -247,7 +232,7 @@ public class PlayerCombat : MonoBehaviour
 
     public IEnumerator TakeDamage(float damage)
     {
-        if(!movementScript.isRolling)
+        if (!movementScript.isRolling)
         {
             health -= damage;
             animator.SetTrigger("Hit");
