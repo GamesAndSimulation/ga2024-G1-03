@@ -8,6 +8,8 @@ TagManager:
   - Bullet
   - Boss
   - Shockwave
+  - LoweredBridge
+  - RaisedBridge
   layers:
   - Default
   - TransparentFX
