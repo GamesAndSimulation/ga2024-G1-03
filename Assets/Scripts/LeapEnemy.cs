@@ -11,7 +11,7 @@ public class LeapEnemy : MonoBehaviour
     public float walkSpeed = 3.0f; 
     private float leapSpeed; 
     public float leapInterval = 2.0f; 
-    private float nextLeapTime = 2f;
+    private float nextLeapTime = 5f;
     private Animator animator;
     private bool isLeaping = false;
     private bool canMove = true;

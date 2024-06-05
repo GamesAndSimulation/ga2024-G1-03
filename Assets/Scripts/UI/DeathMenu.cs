@@ -12,15 +12,12 @@ public class DeathMenu : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void Update()
     {
-      /* if (!isDone)
-       {
-            StartCoroutine(BloodImage());
-            isDone = true;
-       }*/
     }
 
 

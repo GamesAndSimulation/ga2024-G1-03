@@ -263,7 +263,6 @@ public class PlayerCombat : MonoBehaviour
         animator.SetTrigger("Die");
         animator2.SetTrigger("Die"); 
         yield return new WaitForSeconds(0.2f);
-        FindObjectOfType<MainMenu>().hasStarted = false;
         FindObjectOfType<DeathMenu>().deathMenuUI.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

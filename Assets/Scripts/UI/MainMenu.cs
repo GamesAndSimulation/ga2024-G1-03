@@ -27,7 +27,7 @@ public class MainMenu : MonoBehaviour
         mainMenuUI.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SceneManager.LoadScene("IntroCutscene", LoadSceneMode.Single);
+        //SceneManager.LoadScene("IntroCutscene", LoadSceneMode.Single);
         Time.timeScale = 1f;
         hasStarted = true; 
     }
