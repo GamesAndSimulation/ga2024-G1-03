@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class dialogue : MonoBehaviour
+public class Dialogue : MonoBehaviour
 {
     //UI
 

@@ -11,8 +11,8 @@ public class NewCharacterZone : MonoBehaviour
     [SerializeField] private Transform vfxTransform;
     public Characters character;
     private bool inArea = false;
-
-    [SerializeField] private dialogue dialogueScript;
+    public bool unlocksCharacter = false;
+    [SerializeField] private Dialogue dialogueScript;
 
     void Start()
     {
@@ -21,7 +21,8 @@ public class NewCharacterZone : MonoBehaviour
 
     void Update()
     {
-        if (dialogueScript.dialogueFinished){
+        if (dialogueScript.dialogueFinished && unlocksCharacter){
+            Debug.Log("here");
             charManager.UnlockCharacter(character, vfxTransform);
             Destroy(transform.parent.gameObject);
         }

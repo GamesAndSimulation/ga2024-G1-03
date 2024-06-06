@@ -103,8 +103,8 @@ public class CharacterManager : MonoBehaviour
         unlockedCharacters.Add(character);
         characterSlots[unlockedCharacters.Count - 1].sprite = characterSprites[(int)character];
         UIVfx[unlockedCharacters.Count - 2].Play();
-       // UIVfx[unlockedCharacters.Count - 2].gameObject.GetComponent<AudioSource>().Play();
         characterSlots[unlockedCharacters.Count - 1].gameObject.SetActive(true);
+        Debug.Log("unlocked: " + unlockedCharacters.Count);
     }
 
     //check if dwarf can switch to another character since he is smaller
