@@ -31,7 +31,7 @@ public class DeathMenu : MonoBehaviour
     public void QuitGame()
     {
         Debug.Log("Quitting game...");
-        // Application.Quit();
+        Application.Quit();
     }
 
     public IEnumerator BloodImage()

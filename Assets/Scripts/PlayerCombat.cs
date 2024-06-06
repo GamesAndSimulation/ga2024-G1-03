@@ -92,7 +92,8 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("DaggerAttack") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(knightCost)) return;
-            if (boss.enabled == true) boss.Dodge();
+            if (boss.enabled == true)
+                StartCoroutine(boss.Dodge());
             knightClip = soundGeneration.GenerateAudio();
             isAttacking = true;
             AttackStamina(knightCost);
@@ -106,7 +107,8 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo.IsName("SpellCast") && !animator.IsInTransition(1) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(mageCost)) return;
-            if (boss.enabled == true) boss.Dodge();
+            if (boss.enabled == true)
+                StartCoroutine(boss.Dodge());
             isAttacking = true;
             AttackStamina(mageCost);
             animator.SetTrigger("Spell"); 
@@ -139,7 +141,8 @@ public class PlayerCombat : MonoBehaviour
         if (!stateInfo2.IsName("DwarfAtk") && !animator2.IsInTransition(0) && !movementScript.isRolling)
         {
             if (NoStaminaAlert(dwarfCost)) return;
-            if (boss.enabled == true) boss.Dodge();
+            if (boss.enabled == true)
+                StartCoroutine(boss.Dodge());
             isAttacking = true;
             dwarfAttack = true;
             //dwarf.transform.SetParent(null);

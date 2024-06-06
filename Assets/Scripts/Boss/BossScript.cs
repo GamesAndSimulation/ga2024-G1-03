@@ -234,10 +234,9 @@ public class BossScript : MonoBehaviour
     {
         float odd = Random.Range(0f, 1f);
         isDodging = true;
-        if (odd < 0.3f)
+        if (odd < 0.2f)
         {
-            if (odd < 0.15f)
-
+            if (odd < 0.1f)
             animator.SetTrigger("DodgeR");
             else
             animator.SetTrigger("DodgeL");
