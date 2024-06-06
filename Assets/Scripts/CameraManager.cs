@@ -3,7 +3,7 @@ using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    public CinemachineVirtualCamera cinemachine;
+    public Camera cinemachine;
     public GameObject freeCamera;
     public bool isFreeCameraActive = false;
     [SerializeField] private PlayerMovement playerMovement;
@@ -24,7 +24,8 @@ public class CameraManager : MonoBehaviour
             if (!isFreeCameraActive)
             {
                 freeCamera.SetActive(false);
-                cinemachine.gameObject.SetActive(true);
+                //cinemachine.gameObject.SetActive(true);
+                cinemachine.enabled = true;
             }
             else
             {
@@ -32,7 +33,8 @@ public class CameraManager : MonoBehaviour
                 playerMovement.animator2.SetFloat("Speed", 0f);
                 freeCamera.transform.SetPositionAndRotation(cinemachine.transform.position, cinemachine.transform.rotation);
                 freeCamera.SetActive(true);
-                cinemachine.gameObject.SetActive(false);
+                //cinemachine.gameObject.SetActive(false);
+                cinemachine.enabled = false;
             }
         }
 

@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterRenderer:
-  - {fileID: 1525115211125053131}
+  - {fileID: 0}
   whiteMaterial: {fileID: 2100000, guid: 9d8abde8f3e42784aac1a6331a17dad7, type: 2}
   originalMaterial:
   - {fileID: 2100000, guid: 2a12d3fc0532ba64e972160db18dfd99, type: 2}
@@ -155,73 +155,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64618144474318532, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
-    - {fileID: 23936477714811390, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
-    - {fileID: 33593359218544430, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1197526430568728, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1525115211125053131}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
---- !u!1 &2515115827599566624 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1197526430568728, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
-  m_PrefabInstance: {fileID: 2513920782334703160}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &1525115211125053131
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2515115827599566624}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 6ef71fb53ed68fd4180e64d11bb0de5b, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: dd18868110ea58447b2217026ece1707, type: 3}
-  m_Bones: []
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 0}
-  m_AABB:
-    m_Center: {x: 0, y: 0.547152, z: 0}
-    m_Extent: {x: 0.33721295, y: 0.547152, z: 0.33381864}
-  m_DirtyAABB: 0
 --- !u!4 &2518521543166003758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4688722031033366, guid: c28fbdcb6f5755b488f511c68ced2e84, type: 3}
